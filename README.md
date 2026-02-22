@@ -78,10 +78,13 @@ A ideia é que você consiga **ler, entender e reproduzir** tudo por conta próp
 
 ```
 fullstack-angular-node/
-├── ESTUDO-PASSO-A-PASSO.md     ← 📖 Este guia (você está aqui!)
+├── README.md                    ← 📖 Este guia (você está aqui!)
 ├── node-api/                    ← 🔧 Backend (API em Node.js + Express)
 │     ├── package.json
-│     ├── server.js
+│     ├── server.js              ← servidor refatorado (configuração + rotas externas)
+│     ├── server.v1.js           ← versão original do servidor (tudo junto, para referência)
+│     ├── routes/
+│     │     └── tarefas.js       ← rotas CRUD separadas
 │     └── node_modules/
 └── (frontend angular/)          ← 🖥️ Frontend (em breve)
 ```
@@ -100,7 +103,7 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 4. **Entender APIs** — o que são, como funcionam, o que é REST, HTTP, JSON e códigos de status ✅
 5. **Construir o CRUD** — criar todas as rotas da API de tarefas (criar, listar, buscar, atualizar, deletar) ✅
 6. **Testar a API** — validar cada endpoint com requisições reais ✅
-7. **Organizar o código** — separar rotas em arquivos próprios usando Express Router *(fase atual)*
+7. **Organizar o código** — separar rotas em arquivos próprios usando Express Router ✅
 8. **Construir o Frontend** — criar a interface com Angular *(em breve)*
 9. **Integrar tudo** — conectar o Angular com a API Node.js *(em breve)*
 
@@ -980,64 +983,74 @@ tarefas.splice(index, 1);
 
 ### Passo 8 — O código completo do `server.js` com CRUD
 
-Aqui está o código completo com todas as rotas CRUD, comentado linha a linha:
+Aqui estão **duas versões** do mesmo código — a primeira é a versão limpa para digitar, a segunda é a versão de estudo com explicações detalhadas de cada linha.
+
+#### Versão limpa (para digitar e usar como referência rápida)
 
 ```javascript
-// 1 - Importa o Express
+/*
+O que o server.js completo deve ter:
+
+1. const express = require('express');
+2. const app = express();
+3. const PORT = 3000;
+4. app.use(express.json());
+5. let tarefas = [];
+6. let proximoId = 1;
+7. Rota POST /tarefas
+8. Rota GET /tarefas
+9. Rota GET /tarefas/:id
+10. Rota PUT /tarefas/:id
+11. Rota DELETE /tarefas/:id
+12. app.listen(PORT, ...)
+*/
+
 const express = require('express');
-
-// 2 - Cria a instância do Express (nosso servidor)
 const app = express();
-
-// 3 - Define a porta do servidor
 const PORT = 3000;
 
-// 4 - Middleware para parsear o corpo das requisições como JSON
 app.use(express.json());
 
-// 5 e 6 - "Banco de dados" temporário em memória
-let tarefas = [];     // Array que armazena as tarefas
-let proximoId = 1;    // Contador para gerar IDs únicos
+let tarefas = [];
+let proximoId = 1;
 
-// ============ ROTAS CRUD ============
-
-// 7 - CREATE - Criar uma nova tarefa (POST /tarefas)
+// CREATE - POST /tarefas
 app.post('/tarefas', (req, res) => {
-    const { titulo, descricao } = req.body;       // Extrai dados do corpo
+    const { titulo, descricao } = req.body;
 
-    if (!titulo) {                                 // Valida: título é obrigatório
+    if (!titulo) {
         return res.status(400).json({ erro: 'O campo titulo é obrigatório' });
     }
 
     const novaTarefa = {
-        id: proximoId++,                           // Gera ID e incrementa o contador
-        titulo,                                    // Atalho para titulo: titulo
-        descricao: descricao || '',                // Se não enviou, fica vazio
-        concluida: false                           // Toda tarefa começa como pendente
+        id: proximoId++,
+        titulo,
+        descricao: descricao || '',
+        concluida: false
     };
 
-    tarefas.push(novaTarefa);                      // Adiciona ao array
-    res.status(201).json(novaTarefa);              // Responde com 201 (Created)
+    tarefas.push(novaTarefa);
+    res.status(201).json(novaTarefa);
 });
 
-// 8 - READ ALL - Listar todas as tarefas (GET /tarefas)
+// READ ALL - GET /tarefas
 app.get('/tarefas', (req, res) => {
-    res.json(tarefas);                             // Retorna o array completo
+    res.json(tarefas);
 });
 
-// 9 - READ ONE - Buscar uma tarefa pelo ID (GET /tarefas/:id)
+// READ ONE - GET /tarefas/:id
 app.get('/tarefas/:id', (req, res) => {
-    const id = parseInt(req.params.id);            // Converte string para número
-    const tarefa = tarefas.find(t => t.id === id); // Busca no array
+    const id = parseInt(req.params.id);
+    const tarefa = tarefas.find(t => t.id === id);
 
-    if (!tarefa) {                                 // Se não encontrou
+    if (!tarefa) {
         return res.status(404).json({ erro: 'Tarefa não encontrada' });
     }
 
-    res.json(tarefa);                              // Retorna a tarefa encontrada
+    res.json(tarefa);
 });
 
-// 10 - UPDATE - Atualizar uma tarefa (PUT /tarefas/:id)
+// UPDATE - PUT /tarefas/:id
 app.put('/tarefas/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const tarefa = tarefas.find(t => t.id === id);
@@ -1048,28 +1061,247 @@ app.put('/tarefas/:id', (req, res) => {
 
     const { titulo, descricao, concluida } = req.body;
 
-    // Atualiza APENAS os campos que foram enviados
     if (titulo !== undefined) tarefa.titulo = titulo;
     if (descricao !== undefined) tarefa.descricao = descricao;
     if (concluida !== undefined) tarefa.concluida = concluida;
 
-    res.json(tarefa);                              // Retorna a tarefa atualizada
+    res.json(tarefa);
 });
 
-// 11 - DELETE - Deletar uma tarefa (DELETE /tarefas/:id)
+// DELETE - DELETE /tarefas/:id
 app.delete('/tarefas/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const index = tarefas.findIndex(t => t.id === id);  // Encontra a posição
+    const index = tarefas.findIndex(t => t.id === id);
 
-    if (index === -1) {                            // -1 = não encontrou
+    if (index === -1) {
         return res.status(404).json({ erro: 'Tarefa não encontrada' });
     }
 
-    tarefas.splice(index, 1);                      // Remove 1 item na posição
+    tarefas.splice(index, 1);
     res.json({ mensagem: 'Tarefa deletada com sucesso' });
 });
 
-// 12 - Inicia o servidor
+app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
+```
+
+#### Versão comentada (para estudar a sintaxe e entender cada linha)
+
+```javascript
+/*
+O que o server.js completo deve ter:
+
+1. const express = require('express');   ← importar a biblioteca Express
+2. const app = express();                ← criar o servidor
+3. const PORT = 3000;                    ← definir a porta
+4. app.use(express.json());              ← middleware para entender JSON
+5. let tarefas = [];                     ← array para armazenar tarefas
+6. let proximoId = 1;                    ← contador de IDs
+7. Rota POST /tarefas                    ← criar tarefa
+8. Rota GET /tarefas                     ← listar todas
+9. Rota GET /tarefas/:id                 ← buscar uma
+10. Rota PUT /tarefas/:id                ← atualizar
+11. Rota DELETE /tarefas/:id             ← deletar
+12. app.listen(PORT, ...)                ← ligar o servidor
+*/
+
+// ──── 1. IMPORTAÇÃO ────
+// require('express')  → função do Node.js que IMPORTA uma biblioteca instalada
+//                     → vai buscar o Express dentro da pasta node_modules/
+// const               → declara uma variável que NÃO pode ser reatribuída (constante)
+// const express       → guarda a biblioteca Express nessa variável
+const express = require('express');
+
+// ──── 2. INSTÂNCIA DO EXPRESS ────
+// express()  → CHAMA a função express (note os parênteses) e cria uma nova aplicação
+// const app  → guarda essa aplicação na variável "app"
+// A partir de agora, "app" É o nosso servidor — todas as configurações e rotas são feitas nele
+const app = express();
+
+// ──── 3. DEFINIR A PORTA ────
+// PORT = 3000  → a porta onde o servidor vai "escutar" por requisições
+// const        → usamos const porque a porta não muda durante a execução
+// Convenção: nomes de constantes fixas costumam ser em MAIÚSCULAS (PORT, não port)
+const PORT = 3000;
+
+// ──── 4. MIDDLEWARE ────
+// app.use(...)        → registra um MIDDLEWARE (função que roda ANTES de cada requisição)
+// express.json()      → middleware nativo do Express que:
+//                       1. Lê o corpo (body) da requisição
+//                       2. Se for JSON, converte para um objeto JavaScript
+//                       3. Coloca o resultado em req.body
+// Sem essa linha, req.body seria UNDEFINED em todas as rotas
+app.use(express.json());
+
+// ──── 5 e 6. "BANCO DE DADOS" TEMPORÁRIO ────
+// let (em vez de const)  → porque o valor VAI mudar (vamos adicionar/remover tarefas)
+// []                     → ARRAY LITERAL vazio — vai receber os objetos de tarefas
+let tarefas = [];
+// proximoId = 1          → contador que gera IDs únicos para cada tarefa
+// Começa em 1, e cada vez que uma tarefa é criada, incrementa: 1, 2, 3...
+let proximoId = 1;
+
+// ════════════ ROTAS CRUD ════════════
+
+// ──── 7. CREATE — Criar uma nova tarefa (POST /tarefas) ────
+// app.post(...)       → registra uma rota que SÓ responde a requisições do tipo POST
+// '/tarefas'          → STRING com o caminho/URL do endpoint
+// (req, res) => {...} → ARROW FUNCTION (função de callback) com dois parâmetros:
+//                       req (Request)  = objeto com tudo que o cliente enviou
+//                       res (Response) = objeto que usamos para responder ao cliente
+app.post('/tarefas', (req, res) => {
+    // const { titulo, descricao } = req.body → DESESTRUTURAÇÃO (destructuring)
+    // req.body              → objeto com os dados JSON enviados pelo cliente
+    // { titulo, descricao } → extrai as propriedades "titulo" e "descricao" do objeto
+    // É o mesmo que escrever:
+    //   const titulo = req.body.titulo;
+    //   const descricao = req.body.descricao;
+    const { titulo, descricao } = req.body;
+
+    // if (!titulo)  → ESTRUTURA CONDICIONAL (if)
+    // !             → operador de NEGAÇÃO (NOT) — inverte o valor lógico
+    // !titulo       → "se titulo NÃO existe" (é undefined, null, ou string vazia "")
+    //               → Valores "falsy" em JS: undefined, null, "", 0, NaN, false
+    if (!titulo) {
+        // return  → INTERROMPE a execução da função imediatamente
+        //         → Sem o return, o código continuaria e tentaria criar a tarefa sem título
+        // res.status(400)    → define o código HTTP 400 (Bad Request = requisição inválida)
+        // .json({...})       → envia um objeto JSON como resposta
+        // Esse encadeamento .status().json() se chama METHOD CHAINING (encadear métodos)
+        return res.status(400).json({ erro: 'O campo titulo é obrigatório' });
+    }
+
+    // const novaTarefa = {...} → cria um OBJETO LITERAL com as propriedades da tarefa
+    const novaTarefa = {
+        // id: proximoId++  → OPERADOR DE PÓS-INCREMENTO (++)
+        //                  → Primeiro USA o valor atual (ex: 1), depois INCREMENTA para 2
+        //                  → Primeira tarefa: id=1, segunda: id=2, terceira: id=3...
+        //                  → Diferente de ++proximoId (pré-incremento): incrementa ANTES de usar
+        id: proximoId++,
+        // titulo  → SHORTHAND PROPERTY (propriedade abreviada)
+        //         → Quando a chave e a variável têm o MESMO nome, pode escrever só o nome
+        //         → titulo é o mesmo que titulo: titulo
+        titulo,
+        // descricao || ''  → OPERADOR LÓGICO OR (||)
+        //                  → Se descricao tem valor (truthy), usa descricao
+        //                  → Se descricao é undefined/null (falsy), usa '' (string vazia)
+        //                  → É um VALOR PADRÃO (fallback/default value)
+        descricao: descricao || '',
+        // false  → BOOLEANO (tipo de dado que só tem dois valores: true ou false)
+        //        → Toda tarefa começa como NÃO concluída
+        concluida: false
+    };
+
+    // tarefas.push(novaTarefa) → MÉTODO DE ARRAY push()
+    //                          → Adiciona o item ao FINAL do array
+    //                          → tarefas: [] → [{tarefa1}] → [{tarefa1}, {tarefa2}]
+    tarefas.push(novaTarefa);
+    // res.status(201)    → código HTTP 201 (Created = recurso criado com sucesso)
+    // .json(novaTarefa)  → envia a tarefa criada na resposta para o cliente ver o resultado
+    res.status(201).json(novaTarefa);
+});
+
+// ──── 8. READ ALL — Listar todas as tarefas (GET /tarefas) ────
+// app.get(...)  → registra uma rota que SÓ responde a requisições do tipo GET
+app.get('/tarefas', (req, res) => {
+    // res.json(tarefas) → envia o array inteiro de tarefas como resposta JSON
+    // Quando NÃO definimos res.status(), o Express usa 200 (OK) automaticamente
+    res.json(tarefas);
+});
+
+// ──── 9. READ ONE — Buscar uma tarefa pelo ID (GET /tarefas/:id) ────
+// '/tarefas/:id' → PARÂMETRO DE ROTA — o :id é uma VARIÁVEL DINÂMICA na URL
+//                → /tarefas/1 → id="1", /tarefas/5 → id="5", /tarefas/42 → id="42"
+//                → O : indica que esse pedaço da URL é variável, não literal
+app.get('/tarefas/:id', (req, res) => {
+    // parseInt(req.params.id)  → CONVERSÃO DE TIPO (type casting)
+    // req.params               → objeto com todos os parâmetros de rota
+    // req.params.id            → valor do :id na URL (sempre vem como STRING)
+    // parseInt("1")            → converte a string "1" para o número inteiro 1
+    //                          → Necessário porque "1" === 1 é FALSE (tipos diferentes)
+    //                          → === é COMPARAÇÃO ESTRITA (compara valor E tipo)
+    const id = parseInt(req.params.id);
+    // tarefas.find(callback)       → MÉTODO DE ARRAY find()
+    // t => t.id === id             → ARROW FUNCTION CURTA (sem chaves = retorno implícito)
+    // t                            → parâmetro: cada item do array (escolhemos "t" de "tarefa")
+    // t.id === id                  → condição: o id da tarefa é igual ao id procurado?
+    // find() percorre o array e retorna o PRIMEIRO item que satisfaz a condição
+    // Se não encontrar nenhum, retorna UNDEFINED
+    const tarefa = tarefas.find(t => t.id === id);
+
+    // !tarefa → se find() retornou undefined (não encontrou), !undefined = true
+    if (!tarefa) {
+        // 404 = Not Found (recurso não encontrado)
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    // Envia a tarefa encontrada (status 200 OK implícito)
+    res.json(tarefa);
+});
+
+// ──── 10. UPDATE — Atualizar uma tarefa (PUT /tarefas/:id) ────
+// app.put(...)  → registra uma rota que SÓ responde a requisições do tipo PUT
+app.put('/tarefas/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const tarefa = tarefas.find(t => t.id === id);
+
+    if (!tarefa) {
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    // Desestrutura 3 campos possíveis do corpo da requisição
+    const { titulo, descricao, concluida } = req.body;
+
+    // !== undefined → DIFERENTE ESTRITO de undefined
+    // Verifica se o campo FOI ENVIADO pelo cliente
+    // Por que !== undefined e não !titulo?
+    //   → !titulo seria true se titulo fosse "" (string vazia) — e talvez o cliente QUEIRA limpar o título
+    //   → !== undefined é mais preciso: só é true se o campo NÃO foi enviado no JSON
+    // Se o cliente enviar apenas {"concluida": true}:
+    //   → titulo = undefined, descricao = undefined, concluida = true
+    //   → Só concluida será atualizada, os outros campos ficam intactos
+    if (titulo !== undefined) tarefa.titulo = titulo;           // Atualiza título SE enviado
+    if (descricao !== undefined) tarefa.descricao = descricao;  // Atualiza descrição SE enviada
+    if (concluida !== undefined) tarefa.concluida = concluida;  // Atualiza status SE enviado
+
+    // Retorna a tarefa com os dados atualizados
+    res.json(tarefa);
+});
+
+// ──── 11. DELETE — Deletar uma tarefa (DELETE /tarefas/:id) ────
+// app.delete(...)  → registra uma rota que SÓ responde a requisições do tipo DELETE
+app.delete('/tarefas/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    // tarefas.findIndex(callback)  → MÉTODO DE ARRAY findIndex()
+    // Parecido com find(), mas retorna a POSIÇÃO (índice numérico) do item no array
+    // Índices começam em 0: primeiro item = 0, segundo = 1, terceiro = 2...
+    // Se NÃO encontrar, retorna -1 (convenção do JavaScript para "não encontrado")
+    const index = tarefas.findIndex(t => t.id === id);
+
+    // index === -1 → findIndex retorna -1 quando não encontra o item
+    if (index === -1) {
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    // tarefas.splice(index, 1) → MÉTODO DE ARRAY splice()
+    // splice(posição, quantidade) → MODIFICA o array original
+    // splice(index, 1)            → remove 1 item a partir da posição "index"
+    // Diferente de find/findIndex que só LEEM, splice ALTERA o array
+    tarefas.splice(index, 1);
+    // Envia mensagem de confirmação
+    res.json({ mensagem: 'Tarefa deletada com sucesso' });
+});
+
+// ──── 12. INICIAR O SERVIDOR ────
+// app.listen(porta, callback) → LIGA o servidor e fica escutando requisições na porta definida
+// PORT                        → a porta 3000 que definimos no início
+// () => {...}                 → arrow function de CALLBACK: executa quando o servidor liga com sucesso
+// console.log(...)            → imprime uma mensagem no terminal (não aparece para o cliente)
+// `...${PORT}`                → TEMPLATE LITERAL (template string):
+//                               usa crase `` em vez de aspas
+//                               ${variavel} insere o valor da variável dentro do texto
+//                               'Servidor rodando em http://localhost:' + PORT faria o mesmo
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
@@ -1699,21 +1931,33 @@ Dentro de `node-api/routes/`, crie o arquivo `tarefas.js`:
 New-Item routes/tarefas.js
 ```
 
-Agora abra o `routes/tarefas.js` e digite o seguinte código:
+Agora abra o `routes/tarefas.js` e digite o seguinte código. Temos **duas versões** — a limpa para digitar e a comentada para estudo.
+
+#### Versão limpa (para digitar)
 
 ```javascript
-// Importa APENAS o Router do Express (não precisamos do express() inteiro)
+/*
+O que o routes/tarefas.js completo deve ter:
+
+1. const express = require('express');
+2. const router = express.Router();
+3. let tarefas = [];
+4. let proximoId = 1;
+5. Rota POST /        (criar tarefa)
+6. Rota GET /         (listar todas)
+7. Rota GET /:id      (buscar uma)
+8. Rota PUT /:id      (atualizar)
+9. Rota DELETE /:id   (deletar)
+10. module.exports = router;
+*/
+
 const express = require('express');
 const router = express.Router();
 
-// "Banco de dados" temporário em memória
 let tarefas = [];
 let proximoId = 1;
 
-// ============ ROTAS CRUD ============
-
-// CREATE - Criar uma nova tarefa (POST /)
-// Nota: a rota é "/" porque o prefixo "/tarefas" já foi definido no server.js
+// CREATE - POST /
 router.post('/', (req, res) => {
     const { titulo, descricao } = req.body;
 
@@ -1732,12 +1976,12 @@ router.post('/', (req, res) => {
     res.status(201).json(novaTarefa);
 });
 
-// READ ALL - Listar todas as tarefas (GET /)
+// READ ALL - GET /
 router.get('/', (req, res) => {
     res.json(tarefas);
 });
 
-// READ ONE - Buscar uma tarefa pelo ID (GET /:id)
+// READ ONE - GET /:id
 router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const tarefa = tarefas.find(t => t.id === id);
@@ -1749,7 +1993,7 @@ router.get('/:id', (req, res) => {
     res.json(tarefa);
 });
 
-// UPDATE - Atualizar uma tarefa (PUT /:id)
+// UPDATE - PUT /:id
 router.put('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const tarefa = tarefas.find(t => t.id === id);
@@ -1767,7 +2011,7 @@ router.put('/:id', (req, res) => {
     res.json(tarefa);
 });
 
-// DELETE - Deletar uma tarefa (DELETE /:id)
+// DELETE - DELETE /:id
 router.delete('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const index = tarefas.findIndex(t => t.id === id);
@@ -1780,7 +2024,183 @@ router.delete('/:id', (req, res) => {
     res.json({ mensagem: 'Tarefa deletada com sucesso' });
 });
 
-// Exporta o router para ser usado no server.js
+module.exports = router;
+```
+
+#### Versão comentada (para estudar a sintaxe e entender cada linha)
+
+```javascript
+/*
+O que o routes/tarefas.js completo deve ter:
+
+1. const express = require('express');      ← importar o Express
+2. const router = express.Router();         ← criar o mini-app de rotas
+3. let tarefas = [];                        ← array para armazenar tarefas
+4. let proximoId = 1;                       ← contador de IDs
+5. Rota POST /        (criar tarefa)
+6. Rota GET /         (listar todas)
+7. Rota GET /:id      (buscar uma)
+8. Rota PUT /:id      (atualizar)
+9. Rota DELETE /:id   (deletar)
+10. module.exports = router;                ← exportar para o server.js usar
+*/
+
+// ──── 1. IMPORTAÇÃO ────
+// require('express')  → busca a biblioteca Express na pasta node_modules
+// const express       → guarda a biblioteca na variável "express"
+const express = require('express');
+
+// ──── 2. CRIAR O ROUTER ────
+// express.Router()    → cria um "mini-app" que gerencia um grupo de rotas
+// const router        → guarda esse mini-app na variável "router"
+// Diferença: no server.js usamos express() (app inteiro), aqui usamos Router() (só rotas)
+const router = express.Router();
+
+// ──── 3 e 4. "BANCO DE DADOS" TEMPORÁRIO ────
+// let (em vez de const) → porque o valor vai mudar (vamos adicionar/remover tarefas)
+// []                    → array vazio que vai receber os objetos de tarefas
+let tarefas = [];
+// proximoId             → contador que gera IDs únicos para cada tarefa
+// Começa em 1, e cada tarefa criada incrementa esse valor (1, 2, 3...)
+let proximoId = 1;
+
+// ════════════ ROTAS CRUD ════════════
+
+// ──── 5. CREATE — Criar uma nova tarefa (POST /) ────
+// router.post(...)  → define uma rota que aceita requisições POST
+// '/'               → caminho da rota (é "/" porque o prefixo "/tarefas" já está no server.js)
+// (req, res) => {}  → arrow function com dois parâmetros:
+//                     req (request)  = dados que o cliente enviou
+//                     res (response) = objeto para enviar a resposta
+router.post('/', (req, res) => {
+    // const { titulo, descricao } = req.body → DESESTRUTURAÇÃO
+    // req.body           → corpo da requisição (os dados JSON que o cliente enviou)
+    // { titulo, descricao } → extrai as propriedades "titulo" e "descricao" do objeto
+    // É o mesmo que: const titulo = req.body.titulo; const descricao = req.body.descricao;
+    const { titulo, descricao } = req.body;
+
+    // if (!titulo)  → ! é o operador de NEGAÇÃO (NOT)
+    //               → !titulo = "se titulo NÃO existe" (é undefined, null, ou string vazia)
+    //               → É uma VALIDAÇÃO: impede criar tarefa sem título
+    if (!titulo) {
+        // return           → PARA a execução da função aqui (não continua o código abaixo)
+        // res.status(400)  → define o código HTTP 400 (Bad Request = requisição inválida)
+        // .json({...})     → envia a resposta em formato JSON com a mensagem de erro
+        // O encadeamento res.status().json() é chamado de METHOD CHAINING (encadear métodos)
+        return res.status(400).json({ erro: 'O campo titulo é obrigatório' });
+    }
+
+    // const novaTarefa = {...} → cria um OBJETO LITERAL com as propriedades da tarefa
+    const novaTarefa = {
+        // id: proximoId++  → OPERADOR DE PÓS-INCREMENTO
+        //                  → primeiro USA o valor atual (ex: 1), depois INCREMENTA para 2
+        //                  → Primeira tarefa: id=1, segunda: id=2, terceira: id=3...
+        id: proximoId++,
+        // titulo           → SHORTHAND PROPERTY — atalho quando a chave e a variável têm o mesmo nome
+        //                  → titulo é o mesmo que titulo: titulo
+        titulo,
+        // descricao || ''  → OPERADOR OR (||)
+        //                  → Se descricao existe, usa ela. Se não (undefined/null), usa '' (string vazia)
+        //                  → É um valor padrão (fallback/default value)
+        descricao: descricao || '',
+        // concluida: false → toda tarefa começa como NÃO concluída
+        //                  → false é um valor BOOLEANO (verdadeiro/falso)
+        concluida: false
+    };
+
+    // tarefas.push(novaTarefa) → MÉTODO DE ARRAY push()
+    //                          → adiciona o objeto novaTarefa ao FINAL do array tarefas
+    tarefas.push(novaTarefa);
+    // res.status(201)          → código HTTP 201 (Created = recurso criado com sucesso)
+    // .json(novaTarefa)        → envia a tarefa criada como resposta em JSON
+    res.status(201).json(novaTarefa);
+});
+
+// ──── 6. READ ALL — Listar todas as tarefas (GET /) ────
+// router.get(...)  → define rota que aceita requisições GET (buscar dados)
+router.get('/', (req, res) => {
+    // res.json(tarefas) → envia o array inteiro de tarefas como resposta JSON
+    // Quando não definimos res.status(), o Express usa 200 (OK) por padrão
+    res.json(tarefas);
+});
+
+// ──── 7. READ ONE — Buscar uma tarefa pelo ID (GET /:id) ────
+// '/:id'  → PARÂMETRO DE ROTA — o :id é uma variável dinâmica na URL
+//         → /1 → id="1", /5 → id="5", /42 → id="42"
+router.get('/:id', (req, res) => {
+    // parseInt(req.params.id) → CONVERSÃO DE TIPO
+    // req.params.id           → pega o valor do parâmetro :id da URL (sempre vem como STRING)
+    // parseInt(...)           → converte a string "1" para o número 1
+    //                         → Necessário porque "1" === 1 é FALSE (tipos diferentes)
+    const id = parseInt(req.params.id);
+    // tarefas.find(t => t.id === id) → MÉTODO DE ARRAY find()
+    // t => t.id === id               → arrow function curta (sem chaves = retorno implícito)
+    // t                              → cada tarefa do array (parâmetro da função)
+    // t.id === id                    → COMPARAÇÃO ESTRITA (===) — compara valor E tipo
+    // find() retorna o PRIMEIRO item que satisfaz a condição, ou UNDEFINED se não encontrar
+    const tarefa = tarefas.find(t => t.id === id);
+
+    // !tarefa  → se find() não encontrou (retornou undefined), !undefined = true
+    if (!tarefa) {
+        // 404 = Not Found (recurso não encontrado)
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    // Envia a tarefa encontrada (status 200 OK implícito)
+    res.json(tarefa);
+});
+
+// ──── 8. UPDATE — Atualizar uma tarefa (PUT /:id) ────
+// router.put(...)  → define rota que aceita requisições PUT (atualizar dados)
+router.put('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const tarefa = tarefas.find(t => t.id === id);
+
+    if (!tarefa) {
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    // Desestrutura 3 campos possíveis do corpo da requisição
+    const { titulo, descricao, concluida } = req.body;
+
+    // !== undefined  → DIFERENTE de undefined (verifica se o campo FOI ENVIADO)
+    // Diferente de !titulo: aqui queremos saber "o cliente enviou esse campo?"
+    // Se o cliente enviar só {"concluida": true}, titulo será undefined
+    // e NÃO queremos apagar o título existente — só atualizamos o que foi enviado
+    if (titulo !== undefined) tarefa.titulo = titulo;           // Atualiza título SE enviado
+    if (descricao !== undefined) tarefa.descricao = descricao;  // Atualiza descrição SE enviada
+    if (concluida !== undefined) tarefa.concluida = concluida;  // Atualiza status SE enviado
+
+    // Retorna a tarefa com os dados atualizados
+    res.json(tarefa);
+});
+
+// ──── 9. DELETE — Deletar uma tarefa (DELETE /:id) ────
+// router.delete(...)  → define rota que aceita requisições DELETE (remover dados)
+router.delete('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    // tarefas.findIndex(t => t.id === id) → MÉTODO DE ARRAY findIndex()
+    // Parecido com find(), mas retorna a POSIÇÃO (índice) do item no array
+    // Se não encontrar, retorna -1 (convenção do JavaScript)
+    const index = tarefas.findIndex(t => t.id === id);
+
+    // index === -1  → -1 significa "não encontrado" (convenção do findIndex)
+    if (index === -1) {
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    // tarefas.splice(index, 1) → MÉTODO DE ARRAY splice()
+    // splice(posição, quantidade) → remove "quantidade" itens a partir da "posição"
+    // splice(index, 1)           → remove 1 item na posição encontrada
+    tarefas.splice(index, 1);
+    // Envia mensagem de confirmação
+    res.json({ mensagem: 'Tarefa deletada com sucesso' });
+});
+
+// ──── 10. EXPORTAÇÃO ────
+// module.exports = router → EXPORTA o router para que outros arquivos possam usar
+// No server.js, usamos require('./routes/tarefas') para importar este router
+// É assim que arquivos "conversam" no Node.js: um exporta (module.exports), outro importa (require)
 module.exports = router;
 ```
 
@@ -1802,28 +2222,81 @@ module.exports = router;
 
 Agora o `server.js` fica **muito mais enxuto** — só configuração e conexão de rotas:
 
-Abra o `server.js` e substitua todo o conteúdo por:
+Abra o `server.js` e substitua todo o conteúdo. Temos **duas versões**:
+
+#### Versão limpa (para digitar)
 
 ```javascript
-// 1 - Importa o Express
+/*
+O que o server.js (refatorado) deve ter:
+
+1. const express = require('express');
+2. const app = express();
+3. const PORT = 3000;
+4. app.use(express.json());
+5. const tarefasRoutes = require('./routes/tarefas');
+6. app.use('/tarefas', tarefasRoutes);
+7. app.listen(PORT, ...)
+*/
+
 const express = require('express');
-
-// 2 - Cria a instância do Express
 const app = express();
-
-// 3 - Define a porta do servidor
 const PORT = 3000;
 
-// 4 - Middleware para parsear JSON
 app.use(express.json());
 
-// 5 - Importa as rotas de tarefas
 const tarefasRoutes = require('./routes/tarefas');
-
-// 6 - "Pluga" as rotas com prefixo /tarefas
 app.use('/tarefas', tarefasRoutes);
 
-// 7 - Inicia o servidor
+app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
+```
+
+#### Versão comentada (para estudar a sintaxe)
+
+```javascript
+/*
+O que o server.js (refatorado) deve ter:
+
+1. const express = require('express');               ← importar o Express
+2. const app = express();                            ← criar o servidor
+3. const PORT = 3000;                                ← definir a porta
+4. app.use(express.json());                          ← middleware para entender JSON
+5. const tarefasRoutes = require('./routes/tarefas');  ← importar as rotas de tarefas
+6. app.use('/tarefas', tarefasRoutes);               ← plugar as rotas com prefixo
+7. app.listen(PORT, ...)                             ← ligar o servidor
+*/
+
+// ──── 1. IMPORTAÇÃO ────
+const express = require('express');
+
+// ──── 2. INSTÂNCIA DO EXPRESS ────
+const app = express();
+
+// ──── 3. PORTA DO SERVIDOR ────
+const PORT = 3000;
+
+// ──── 4. MIDDLEWARE ────
+app.use(express.json());
+
+// ──── 5. IMPORTAR AS ROTAS ────
+// require('./routes/tarefas') → importa o arquivo routes/tarefas.js
+// './'                        → caminho RELATIVO (a partir da pasta atual)
+// './routes/tarefas'          → pasta routes, arquivo tarefas.js (.js é opcional no require)
+// O que vem de lá? O "router" que exportamos com module.exports
+const tarefasRoutes = require('./routes/tarefas');
+
+// ──── 6. PLUGAR AS ROTAS ────
+// app.use(prefixo, router) → conecta um Router ao servidor com um prefixo de URL
+// '/tarefas'               → PREFIXO: toda requisição que começar com /tarefas vai para esse router
+// tarefasRoutes            → o router importado do arquivo routes/tarefas.js
+// Resultado: router.get('/') vira GET /tarefas
+//            router.get('/:id') vira GET /tarefas/:id
+//            ... e assim por diante
+app.use('/tarefas', tarefasRoutes);
+
+// ──── 7. INICIAR O SERVIDOR ────
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
@@ -1874,6 +2347,7 @@ Estudos/
               ├── package-lock.json      ← versões travadas
               ├── node_modules/          ← bibliotecas instaladas
               ├── server.js              ← configuração do servidor (enxuto) ✅
+              ├── server.v1.js           ← versão original com tudo junto (referência de estudo)
               └── routes/
                     └── tarefas.js       ← rotas CRUD de tarefas ✅
 ```
