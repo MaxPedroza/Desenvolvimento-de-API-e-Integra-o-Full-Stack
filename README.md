@@ -100,8 +100,9 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 4. **Entender APIs** — o que são, como funcionam, o que é REST, HTTP, JSON e códigos de status ✅
 5. **Construir o CRUD** — criar todas as rotas da API de tarefas (criar, listar, buscar, atualizar, deletar) ✅
 6. **Testar a API** — validar cada endpoint com requisições reais ✅
-7. **Construir o Frontend** — criar a interface com Angular *(em breve)*
-8. **Integrar tudo** — conectar o Angular com a API Node.js *(em breve)*
+7. **Organizar o código** — separar rotas em arquivos próprios usando Express Router *(fase atual)*
+8. **Construir o Frontend** — criar a interface com Angular *(em breve)*
+9. **Integrar tudo** — conectar o Angular com a API Node.js *(em breve)*
 
 ---
 
@@ -163,12 +164,25 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 - [Passo 14 — Testando o DELETE](#passo-14--testando-o-delete-delete-tarefasid)
 - [Passo 15 — Testando cenários de ERRO](#passo-15--testando-cenários-de-erro)
 - [Resumo dos Testes](#resumo-dos-testes)
+- [Testando com Ferramentas Visuais (Postman, Insomnia, Thunder Client)](#testando-com-ferramentas-visuais-postman-insomnia-thunder-client)
 - [Conceitos Aprendidos na Fase 6](#conceitos-aprendidos-na-fase-6)
+
+#### Fase 7 — Organizando Rotas em Arquivos Separados
+- [O que estamos fazendo e por quê?](#o-que-estamos-fazendo-e-por-quê)
+- [O que é o Express Router?](#o-que-é-o-express-router)
+- [Módulos em Node.js — module.exports e require](#módulos-em-nodejs--moduleexports-e-require)
+- [O que é app.use() com um prefixo?](#o-que-é-appuse-com-um-prefixo)
+- [Passo 16 — Criar a pasta routes](#passo-16--criar-a-pasta-routes)
+- [Passo 17 — Criar o arquivo routes/tarefas.js](#passo-17--criar-o-arquivo-routestarefasjs)
+- [Passo 18 — Atualizar o server.js](#passo-18--atualizar-o-serverjs)
+- [Passo 19 — Testar para garantir que tudo continua funcionando](#passo-19--testar-para-garantir-que-tudo-continua-funcionando)
+- [Conceitos Aprendidos na Fase 7](#conceitos-aprendidos-na-fase-7)
 
 #### Referência Rápida
 - [Conceitos Importantes Até Aqui](#conceitos-importantes-até-aqui)
 - [Conceitos Aprendidos na Fase 5](#conceitos-aprendidos-na-fase-5)
 - [Conceitos Aprendidos na Fase 6](#conceitos-aprendidos-na-fase-6)
+- [Conceitos Aprendidos na Fase 7](#conceitos-aprendidos-na-fase-7)
 - [Próximos Passos](#próximos-passos)
 
 ---
@@ -1351,6 +1365,180 @@ try {
 
 ---
 
+### Testando com Ferramentas Visuais (Postman, Insomnia, Thunder Client)
+
+Além do terminal, existem **ferramentas visuais** que facilitam muito o teste de APIs. Elas permitem montar requisições de forma gráfica, ver respostas formatadas, salvar coleções de testes e compartilhar com a equipe.
+
+#### Comparativo das Ferramentas
+
+| Ferramenta | Tipo | Gratuito? | Ideal para |
+|---|---|---|---|
+| **Postman** | App desktop/web | Sim (com limites) | A mais popular do mercado, completa |
+| **Insomnia** | App desktop | Sim (com limites) | Interface limpa, leve e intuitiva |
+| **Thunder Client** | Extensão VS Code | Sim | Testar sem sair do VS Code |
+
+> As três fazem a mesma coisa. A diferença é onde rodam e a interface. Escolha a que preferir!
+
+---
+
+#### Postman
+
+**Download:** [postman.com/downloads](https://www.postman.com/downloads/)
+
+1. Instale e abra o Postman (pode usar sem criar conta clicando em "Skip")
+2. Com o servidor rodando (`node server.js`), siga os testes abaixo
+
+##### POST — Criar tarefa
+
+| Campo | Valor |
+|-------|-------|
+| **Método** | `POST` |
+| **URL** | `http://localhost:3000/tarefas` |
+| **Body** | raw → **JSON** |
+
+No body, cole:
+```json
+{
+    "titulo": "Estudar Node.js",
+    "descricao": "Aprender Express e rotas"
+}
+```
+
+Clique em **Send**. Resposta esperada: `201 Created`.
+
+##### GET — Listar todas as tarefas
+
+| Campo | Valor |
+|-------|-------|
+| **Método** | `GET` |
+| **URL** | `http://localhost:3000/tarefas` |
+
+Sem body. Clique em **Send**.
+
+##### GET — Buscar tarefa por ID
+
+| Campo | Valor |
+|-------|-------|
+| **Método** | `GET` |
+| **URL** | `http://localhost:3000/tarefas/1` |
+
+Sem body. Troque o `1` pelo ID desejado.
+
+##### PUT — Atualizar tarefa
+
+| Campo | Valor |
+|-------|-------|
+| **Método** | `PUT` |
+| **URL** | `http://localhost:3000/tarefas/1` |
+| **Body** | raw → **JSON** |
+
+No body:
+```json
+{
+    "titulo": "Estudar Node.js - Atualizado",
+    "concluida": true
+}
+```
+
+##### DELETE — Deletar tarefa
+
+| Campo | Valor |
+|-------|-------|
+| **Método** | `DELETE` |
+| **URL** | `http://localhost:3000/tarefas/1` |
+
+Sem body. Clique em **Send**.
+
+##### Onde configurar o Body no Postman
+
+```
+1. Selecione o método (POST ou PUT)
+2. Digite a URL
+3. Clique na aba "Body"
+4. Selecione "raw"
+5. No dropdown à direita, mude de "Text" para "JSON"
+6. Cole o JSON no campo de texto
+7. Clique em "Send"
+```
+
+```
+┌──────────────────────────────────────────────┐
+│  [POST ▼]  http://localhost:3000/tarefas     │
+├──────────────────────────────────────────────┤
+│  Params  Auth  Headers  [Body]  Scripts      │
+│  ○ none  ○ form-data  ● raw  [JSON ▼]       │
+│  ┌──────────────────────────────────────┐    │
+│  │ {                                    │    │
+│  │   "titulo": "Minha tarefa",          │    │
+│  │   "descricao": "Descrição aqui"      │    │
+│  │ }                                    │    │
+│  └──────────────────────────────────────┘    │
+│                              [ Send ]        │
+└──────────────────────────────────────────────┘
+```
+
+---
+
+#### Insomnia
+
+**Download:** [insomnia.rest/download](https://insomnia.rest/download)
+
+O Insomnia funciona de forma muito parecida com o Postman. A interface é mais limpa e minimalista:
+
+1. Instale e abra o Insomnia
+2. Crie uma nova **Request Collection** (coleção de requisições)
+3. Clique em **New Request** e configure:
+
+| Configuração | Como fazer |
+|---|---|
+| **Método** | Selecione no dropdown (GET, POST, PUT, DELETE) |
+| **URL** | Digite `http://localhost:3000/tarefas` |
+| **Body** | Selecione `JSON` no dropdown do body |
+
+Digite o JSON no corpo e clique em **Send**. A resposta aparece no painel da direita.
+
+> **Dica:** O Insomnia é uma boa alternativa ao Postman se você preferir algo mais leve.
+
+---
+
+#### Thunder Client (Extensão do VS Code)
+
+Se você não quer instalar outro programa, pode testar **direto no VS Code**!
+
+**Como instalar:**
+1. Abra o VS Code
+2. Vá em Extensões (`Ctrl + Shift + X`)
+3. Pesquise **"Thunder Client"**
+4. Clique em **Install**
+
+**Como usar:**
+1. Clique no ícone do raio ⚡ na barra lateral esquerda
+2. Clique em **New Request**
+3. Configure método, URL e body da mesma forma que no Postman
+4. Clique em **Send**
+
+| Vantagem | Descrição |
+|---|---|
+| Sem sair do VS Code | Tudo no mesmo lugar — código e testes |
+| Leve | Não precisa instalar app separado |
+| Interface familiar | Muito parecida com o Postman |
+
+---
+
+#### Terminal vs. Ferramentas Visuais — Quando usar cada uma?
+
+| Situação | Melhor opção |
+|---|---|
+| Teste rápido, um comando só | Terminal (`Invoke-RestMethod`) |
+| Testar vários endpoints organizados | Postman / Insomnia |
+| Não quer sair do VS Code | Thunder Client |
+| Compartilhar testes com a equipe | Postman (coleções exportáveis) |
+| Aprender como HTTP funciona | Terminal (você vê tudo "cru") |
+
+> **No dia a dia do mercado**, a maioria dos desenvolvedores usa **Postman** ou **Insomnia** para testar APIs. Saber usar essas ferramentas é uma habilidade importante.
+
+---
+
 ## Conceitos Aprendidos na Fase 6
 
 | Conceito | O que é |
@@ -1360,6 +1548,374 @@ try {
 | **try/catch** | Estrutura para capturar erros — necessário quando a API retorna status de erro (400, 404) |
 | **Cenários de erro** | Testar não só o "caminho feliz", mas também as situações de falha |
 | **Teste manual** | Validar cada endpoint individualmente antes de conectar com o frontend |
+| **Postman** | Ferramenta visual mais popular para testar APIs — permite montar requisições graficamente |
+| **Insomnia** | Alternativa leve ao Postman, com interface limpa e minimalista |
+| **Thunder Client** | Extensão do VS Code para testar APIs sem sair do editor |
+
+---
+
+## Fase 7 — Organizando Rotas em Arquivos Separados
+
+### O que estamos fazendo e por quê?
+
+Até agora, **todo o código da API** está num único arquivo: `server.js`. Isso funcionou bem enquanto tínhamos poucas rotas, mas imagine um sistema real com dezenas de recursos (tarefas, usuários, categorias, comentários...) — o `server.js` ficaria com milhares de linhas, impossível de manter.
+
+No mundo profissional, projetos Node.js/Express seguem o princípio da **Separação de Responsabilidades** (Separation of Concerns): cada arquivo cuida de **uma coisa só**.
+
+#### Analogia do restaurante
+
+Pense assim:
+- **Antes (tudo no server.js):** O garçom anota pedidos, cozinha, serve, lava louça e fecha o caixa — tudo sozinho
+- **Depois (arquivos separados):** Cada pessoa tem uma função — o garçom atende, o cozinheiro cozinha, o caixa cobra
+
+O resultado é o mesmo, mas a **organização** melhora tudo: é mais fácil encontrar as coisas, corrigir problemas e adicionar novos recursos.
+
+#### Antes vs. Depois
+
+```
+ANTES (tudo misturado):                DEPOIS (organizado):
+                                       
+node-api/                              node-api/
+├── server.js  ← TUDO aqui (100+     ├── server.js  ← só configuração (20 linhas)
+│                linhas)               ├── routes/
+├── package.json                       │   └── tarefas.js  ← rotas de tarefas
+└── node_modules/                      ├── package.json
+                                       └── node_modules/
+```
+
+---
+
+### O que é o Express Router?
+
+O `express.Router()` é uma ferramenta do Express que permite criar **"mini-aplicações" de rotas** em arquivos separados. Pense nele como um **controle remoto parcial** — ele gerencia um grupo de rotas, mas não é o servidor inteiro.
+
+```javascript
+const router = express.Router();
+```
+
+O `router` funciona **exatamente igual** ao `app` para definir rotas:
+
+| Com `app` (antes) | Com `router` (depois) |
+|---|---|
+| `app.get('/tarefas', ...)` | `router.get('/', ...)` |
+| `app.post('/tarefas', ...)` | `router.post('/', ...)` |
+| `app.put('/tarefas/:id', ...)` | `router.put('/:id', ...)` |
+| `app.delete('/tarefas/:id', ...)` | `router.delete('/:id', ...)` |
+
+> Repare que no router as rotas usam `/` e `/:id` em vez de `/tarefas` e `/tarefas/:id`. Isso porque o **prefixo** `/tarefas` será definido no `server.js` quando "plugamos" o router.
+
+---
+
+### Módulos em Node.js — `module.exports` e `require`
+
+Para separar código em arquivos diferentes, o Node.js usa um sistema de **módulos**. É assim que um arquivo "conversa" com outro:
+
+#### Exportar (quem envia)
+
+No arquivo que quer **compartilhar** algo, usamos `module.exports`:
+
+```javascript
+// arquivo: routes/tarefas.js
+const router = express.Router();
+
+// ... define as rotas ...
+
+module.exports = router;  // "exporta" o router para quem quiser usar
+```
+
+#### Importar (quem recebe)
+
+No arquivo que quer **usar** o que foi exportado, usamos `require`:
+
+```javascript
+// arquivo: server.js
+const tarefasRoutes = require('./routes/tarefas');  // "importa" o router
+```
+
+#### Visualizando o fluxo:
+
+```
+┌─────────────────────────────┐         ┌─────────────────────────────┐
+│  routes/tarefas.js          │         │  server.js                  │
+│                             │         │                             │
+│  const router = Router();   │         │  const tarefasRoutes =      │
+│  router.get('/', ...)       │ ──────> │    require('./routes/       │
+│  router.post('/', ...)      │ exports │            tarefas');       │
+│  ...                        │         │                             │
+│  module.exports = router;   │         │  app.use('/tarefas',        │
+│                             │         │          tarefasRoutes);    │
+└─────────────────────────────┘         └─────────────────────────────┘
+```
+
+#### O que é `./`?
+
+O `./` no `require('./routes/tarefas')` significa **"a partir da pasta atual"**. É um caminho relativo:
+
+| Caminho | Significado |
+|---|---|
+| `./routes/tarefas` | Arquivo `tarefas.js` na pasta `routes` (a partir de onde estou) |
+| `../` | Uma pasta acima |
+| `express` | Sem `./` = pacote do `node_modules` (biblioteca instalada) |
+
+> **Regra:** Se o `require` começa com `./` ou `../`, é um arquivo do projeto. Se não tem `./`, é uma biblioteca instalada via npm.
+
+---
+
+### O que é `app.use()` com um prefixo?
+
+Quando "plugamos" o router no server.js, usamos:
+
+```javascript
+app.use('/tarefas', tarefasRoutes);
+```
+
+Isso significa: **"qualquer requisição que comece com `/tarefas`, mande para o `tarefasRoutes` resolver"**.
+
+```
+Requisição: GET /tarefas       → router recebe como GET /
+Requisição: POST /tarefas      → router recebe como POST /
+Requisição: GET /tarefas/1     → router recebe como GET /1    → /:id
+Requisição: PUT /tarefas/1     → router recebe como PUT /1    → /:id
+Requisição: DELETE /tarefas/1  → router recebe como DELETE /1 → /:id
+```
+
+O `app.use` "tira" o prefixo `/tarefas` antes de passar para o router. Por isso no router escrevemos `/` e `/:id` em vez de `/tarefas` e `/tarefas/:id`.
+
+---
+
+### Passo 16 — Criar a pasta `routes`
+
+Dentro da pasta `node-api/`, crie a pasta onde ficarão os arquivos de rotas:
+
+```bash
+mkdir routes
+```
+
+### Passo 17 — Criar o arquivo `routes/tarefas.js`
+
+Dentro de `node-api/routes/`, crie o arquivo `tarefas.js`:
+
+```bash
+New-Item routes/tarefas.js
+```
+
+Agora abra o `routes/tarefas.js` e digite o seguinte código:
+
+```javascript
+// Importa APENAS o Router do Express (não precisamos do express() inteiro)
+const express = require('express');
+const router = express.Router();
+
+// "Banco de dados" temporário em memória
+let tarefas = [];
+let proximoId = 1;
+
+// ============ ROTAS CRUD ============
+
+// CREATE - Criar uma nova tarefa (POST /)
+// Nota: a rota é "/" porque o prefixo "/tarefas" já foi definido no server.js
+router.post('/', (req, res) => {
+    const { titulo, descricao } = req.body;
+
+    if (!titulo) {
+        return res.status(400).json({ erro: 'O campo titulo é obrigatório' });
+    }
+
+    const novaTarefa = {
+        id: proximoId++,
+        titulo,
+        descricao: descricao || '',
+        concluida: false
+    };
+
+    tarefas.push(novaTarefa);
+    res.status(201).json(novaTarefa);
+});
+
+// READ ALL - Listar todas as tarefas (GET /)
+router.get('/', (req, res) => {
+    res.json(tarefas);
+});
+
+// READ ONE - Buscar uma tarefa pelo ID (GET /:id)
+router.get('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const tarefa = tarefas.find(t => t.id === id);
+
+    if (!tarefa) {
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    res.json(tarefa);
+});
+
+// UPDATE - Atualizar uma tarefa (PUT /:id)
+router.put('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const tarefa = tarefas.find(t => t.id === id);
+
+    if (!tarefa) {
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    const { titulo, descricao, concluida } = req.body;
+
+    if (titulo !== undefined) tarefa.titulo = titulo;
+    if (descricao !== undefined) tarefa.descricao = descricao;
+    if (concluida !== undefined) tarefa.concluida = concluida;
+
+    res.json(tarefa);
+});
+
+// DELETE - Deletar uma tarefa (DELETE /:id)
+router.delete('/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = tarefas.findIndex(t => t.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ erro: 'Tarefa não encontrada' });
+    }
+
+    tarefas.splice(index, 1);
+    res.json({ mensagem: 'Tarefa deletada com sucesso' });
+});
+
+// Exporta o router para ser usado no server.js
+module.exports = router;
+```
+
+#### O que mudou em relação ao `server.js` original?
+
+| Antes (server.js) | Depois (routes/tarefas.js) | Por quê |
+|---|---|---|
+| `app.post('/tarefas', ...)` | `router.post('/', ...)` | O prefixo `/tarefas` fica no server.js |
+| `app.get('/tarefas', ...)` | `router.get('/', ...)` | Idem |
+| `app.get('/tarefas/:id', ...)` | `router.get('/:id', ...)` | Idem |
+| Sem exports | `module.exports = router` | Precisa exportar para o server.js usar |
+| Usa `app` | Usa `router` | Router é o "mini-app" para grupo de rotas |
+
+> O código das rotas em si (**a lógica**) é **exatamente o mesmo**. Só mudamos `app` para `router` e removemos o prefixo `/tarefas` das URLs.
+
+---
+
+### Passo 18 — Atualizar o `server.js`
+
+Agora o `server.js` fica **muito mais enxuto** — só configuração e conexão de rotas:
+
+Abra o `server.js` e substitua todo o conteúdo por:
+
+```javascript
+// 1 - Importa o Express
+const express = require('express');
+
+// 2 - Cria a instância do Express
+const app = express();
+
+// 3 - Define a porta do servidor
+const PORT = 3000;
+
+// 4 - Middleware para parsear JSON
+app.use(express.json());
+
+// 5 - Importa as rotas de tarefas
+const tarefasRoutes = require('./routes/tarefas');
+
+// 6 - "Pluga" as rotas com prefixo /tarefas
+app.use('/tarefas', tarefasRoutes);
+
+// 7 - Inicia o servidor
+app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
+```
+
+#### Comparando o antes e o depois:
+
+```
+ANTES: server.js com ~90 linhas (configuração + todas as rotas)
+DEPOIS: server.js com ~17 linhas (só configuração)
+        routes/tarefas.js com ~70 linhas (só rotas de tarefas)
+```
+
+O total de linhas é parecido, mas agora cada arquivo tem **uma responsabilidade clara**.
+
+---
+
+### Passo 19 — Testar para garantir que tudo continua funcionando
+
+Pare o servidor (se estiver rodando) com `Ctrl+C` e inicie novamente:
+
+```bash
+node server.js
+```
+
+Agora teste as mesmas rotas de antes:
+
+```powershell
+# Criar tarefa
+Invoke-RestMethod -Method POST -Uri http://localhost:3000/tarefas -ContentType "application/json" -Body '{"titulo": "Teste reorganização"}'
+
+# Listar tarefas
+Invoke-RestMethod -Uri http://localhost:3000/tarefas | ConvertTo-Json
+```
+
+**Deve funcionar exatamente igual a antes!** As URLs não mudaram — o cliente (quem consome a API) não percebe nenhuma diferença. A mudança foi **interna**, apenas na organização do código.
+
+---
+
+### Estrutura atual do projeto
+
+```
+Estudos/
+  └── fullstack-angular-node/
+        ├── README.md                    ← este guia
+        └── node-api/
+              ├── package.json           ← configuração do projeto
+              ├── package-lock.json      ← versões travadas
+              ├── node_modules/          ← bibliotecas instaladas
+              ├── server.js              ← configuração do servidor (enxuto) ✅
+              └── routes/
+                    └── tarefas.js       ← rotas CRUD de tarefas ✅
+```
+
+---
+
+### Por que essa organização importa?
+
+No futuro, quando adicionarmos mais recursos, basta criar novos arquivos na pasta `routes/`:
+
+```
+routes/
+├── tarefas.js       ← rotas de tarefas
+├── usuarios.js      ← rotas de usuários (futuro)
+├── categorias.js    ← rotas de categorias (futuro)
+└── auth.js          ← rotas de autenticação (futuro)
+```
+
+E no `server.js`, basta "plugar" cada um:
+
+```javascript
+app.use('/tarefas', require('./routes/tarefas'));
+app.use('/usuarios', require('./routes/usuarios'));
+app.use('/categorias', require('./routes/categorias'));
+app.use('/auth', require('./routes/auth'));
+```
+
+Cada arquivo cuida do seu recurso. O `server.js` fica como um **painel de controle** que conecta tudo.
+
+---
+
+## Conceitos Aprendidos na Fase 7
+
+| Conceito | O que é |
+|---|---|
+| **Express Router** | "Mini-aplicação" que agrupa rotas relacionadas em um arquivo separado |
+| **module.exports** | Exporta algo de um arquivo para ser usado por outros (`require`) |
+| **require('./...')** | Importa um arquivo local do projeto (caminhos com `./`) |
+| **require('pacote')** | Importa uma biblioteca instalada do `node_modules` (sem `./`) |
+| **app.use(prefixo, router)** | Conecta um router ao servidor com um prefixo de URL |
+| **Separação de Responsabilidades** | Princípio de organização onde cada arquivo/módulo cuida de uma coisa só |
+| **Refatoração** | Reorganizar o código sem mudar o comportamento — melhorar a estrutura interna |
 
 ---
 
@@ -1367,7 +1923,7 @@ try {
 
 - [x] Criar rotas CRUD completas (GET, POST, PUT, DELETE)
 - [x] Testar todas as rotas da API
-- [ ] Organizar rotas em arquivos separados
+- [x] Organizar rotas em arquivos separados
 - [ ] Conectar com banco de dados
 - [ ] Adicionar validação e tratamento de erros avançado
 - [ ] Criar o frontend com Angular
@@ -1375,4 +1931,4 @@ try {
 
 ---
 
-> **Dica:** Sempre que quiser voltar nesse material, ele estará aqui em `ESTUDO-PASSO-A-PASSO.md`. Vamos atualizando conforme avançamos!
+> **Dica:** Sempre que quiser voltar nesse material, ele estará aqui. Vamos atualizando conforme avançamos!
