@@ -1,4 +1,4 @@
-# Estudo Full Stack — Angular + Node.js
+# Desenvolvimento de API e Integração Full Stack
 
 > Um guia prático e completo para quem quer aprender a desenvolver aplicações web do zero.  
 > Aqui você não só copia código — você **entende cada linha, cada conceito e cada decisão**.
