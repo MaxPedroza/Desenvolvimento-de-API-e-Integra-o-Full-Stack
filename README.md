@@ -95,16 +95,14 @@ fullstack-angular-node/
 
 Este estudo está dividido em **fases progressivas**. Cada fase abaixo é documentada com explicações detalhadas, comandos utilizados e o porquê de cada ação. A ideia é que você siga na ordem, fase por fase, construindo conhecimento de forma incremental.
 
-### O que vamos ver a partir daqui?
+...existing code...
 
-1. **Preparar o ambiente** — verificar se as ferramentas necessárias estão instaladas (Node.js, npm, VS Code) ✅
 2. **Organizar o projeto** — criar a estrutura de pastas que vai abrigar o backend e o frontend ✅
 3. **Criar o servidor** — inicializar o projeto Node.js, instalar o Express e entender a anatomia de um server.js ✅
 4. **Entender APIs** — o que são, como funcionam, o que é REST, HTTP, JSON e códigos de status ✅
 5. **Construir o CRUD** — criar todas as rotas da API de tarefas (criar, listar, buscar, atualizar, deletar) ✅
 6. **Testar a API** — validar cada endpoint com requisições reais ✅
 7. **Organizar o código** — separar rotas em arquivos próprios usando Express Router ✅
-8. **Construir o Frontend** — criar a interface com Angular
 9. **Integrar tudo** — conectar o Angular com a API Node.js
 
 ---
@@ -115,7 +113,6 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 - [Sobre este projeto](#sobre-este-projeto)
   - [O que vamos construir?](#o-que-vamos-construir)
   - [Por que um Todo List?](#por-que-um-todo-list)
-  - [O que vamos aprender?](#o-que-vamos-aprender)
   - [Para quem é este guia?](#para-quem-é-este-guia)
   - [Tecnologias utilizadas](#tecnologias-utilizadas)
   - [Estrutura do projeto](#estrutura-do-projeto)
@@ -124,7 +121,6 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 - [O que é preciso ter instalado?](#o-que-é-preciso-ter-instalado)
 - [Verificando a instalação](#verificando-a-instalação)
 
-#### Fase 2 — Organizando a Estrutura de Pastas
 - [Por que organizar?](#por-que-organizar)
 - [Passo 1 — Criar a pasta raiz do estudo](#passo-1--criar-a-pasta-raiz-do-estudo)
 - [Passo 2 — Criar a pasta do backend (API)](#passo-2--criar-a-pasta-do-backend-api)
@@ -157,16 +153,9 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 - [Métodos de Array usados no CRUD](#métodos-de-array-usados-no-crud)
 - [Passo 8 — O código completo do server.js com CRUD](#passo-8--o-código-completo-do-serverjs-com-crud)
 
-#### Fase 6 — Testando a API
-- [Como testar?](#como-testar)
-- [Passo 9 — Rodar o servidor](#passo-9--rodar-o-servidor)
 - [Passo 10 — Testando o CREATE (POST)](#passo-10--testando-o-create-post-tarefas)
 - [Passo 11 — Testando o READ ALL (GET)](#passo-11--testando-o-read-all-get-tarefas)
-- [Passo 12 — Testando o READ ONE (GET :id)](#passo-12--testando-o-read-one-get-tarefasid)
-- [Passo 13 — Testando o UPDATE (PUT)](#passo-13--testando-o-update-put-tarefasid)
-- [Passo 14 — Testando o DELETE](#passo-14--testando-o-delete-delete-tarefasid)
 - [Passo 15 — Testando cenários de ERRO](#passo-15--testando-cenários-de-erro)
-- [Resumo dos Testes](#resumo-dos-testes)
 - [Testando com Ferramentas Visuais (Postman, Insomnia, Thunder Client)](#testando-com-ferramentas-visuais-postman-insomnia-thunder-client)
 - [Conceitos Aprendidos na Fase 6](#conceitos-aprendidos-na-fase-6)
 
@@ -178,15 +167,10 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 - [Passo 16 — Criar a pasta routes](#passo-16--criar-a-pasta-routes)
 - [Passo 17 — Criar o arquivo routes/tarefas.js](#passo-17--criar-o-arquivo-routestarefasjs)
 - [Passo 18 — Atualizar o server.js](#passo-18--atualizar-o-serverjs)
-- [Passo 19 — Testar para garantir que tudo continua funcionando](#passo-19--testar-para-garantir-que-tudo-continua-funcionando)
 - [Conceitos Aprendidos na Fase 7](#conceitos-aprendidos-na-fase-7)
 
 #### Fase 8 — Criando o Frontend Angular
-- [O que vamos construir?](#o-que-vamos-construir-1)
-- [Passo 1 — Instalar o Angular CLI](#passo-1--instalar-o-angular-cli)
-- [Passo 2 — Criar o projeto Angular](#passo-2--criar-o-projeto-angular)
 - [Passo 3 — Rodar o servidor de desenvolvimento](#passo-3--rodar-o-servidor-de-desenvolvimento)
-- [Passo 4 — Limpar o componente principal](#passo-4--limpar-o-componente-principal)
 - [Conceitos Aprendidos na Fase 8](#conceitos-aprendidos-na-fase-8)
 
 #### Referência Rápida
@@ -234,9 +218,8 @@ Dentro da pasta `Estudos`, vamos criar uma pasta específica para esse estudo. I
 No terminal, dentro de `C:\dev\Estudos`:
 
 ```bash
-mkdir fullstack-angular-node
+...existing code...
 ```
-
 Depois entramos nela:
 
 ```bash
@@ -247,10 +230,6 @@ cd fullstack-angular-node
 
 Dentro de `fullstack-angular-node`, criamos a pasta que vai conter nosso projeto Node.js:
 
-```bash
-mkdir node-api
-```
-
 E entramos nela:
 
 ```bash
@@ -258,66 +237,45 @@ cd node-api
 ```
 
 ### Estrutura atual
-
-```
+...existing code...
 Estudos/
-  └── fullstack-angular-node/       ← pasta raiz do estudo
         ├── ESTUDO-PASSO-A-PASSO.md  ← este arquivo
         └── node-api/                ← projeto backend (Node.js + Express)
 ```
 
 > Mais pra frente, quando formos estudar Angular, vamos criar outra pasta aqui dentro para o frontend.
-
----
-
 ## Fase 3 — Criando o Projeto Node.js (Backend)
 
 ### Passo 3 — Inicializar o projeto com npm
 
-Dentro da pasta `node-api`, rodamos:
-
-```bash
-npm init -y
 ```
 
 **O que esse comando faz?**
 - Cria o arquivo `package.json` na pasta atual.
-- O `package.json` é o **"cartão de identidade"** do projeto Node.js. Ele guarda:
   - Nome do projeto
   - Versão
   - Scripts (comandos que podemos rodar)
   - Lista de dependências (bibliotecas instaladas)
 - O `-y` aceita todos os valores padrão automaticamente. Sem ele, o npm perguntaria nome, versão, descrição, etc.
-
 > **Regra importante:** Todo projeto Node.js começa com `npm init`. Sem o `package.json`, não conseguimos instalar dependências nem organizar o projeto.
-
 ### Passo 4 — Instalar o Express
 
 Express é o framework mais popular do Node.js para criar servidores web e APIs REST.
 
 ```bash
 npm install express
-```
-
-**O que esse comando faz?**
 - Baixa a biblioteca Express da internet (do registro npm).
 - Cria a pasta `node_modules/` — onde ficam todas as bibliotecas instaladas.
 - Cria o arquivo `package-lock.json` — trava as versões exatas das dependências.
 - Adiciona `"express"` na seção `"dependencies"` do `package.json`.
 
-> **Dica:** Nunca mexa manualmente na pasta `node_modules`. Ela é gerenciada pelo npm. Se precisar reinstalar, basta rodar `npm install`.
 
 ### Passo 5 — Criar o arquivo principal do servidor
 
-Vamos criar o arquivo `server.js` — ele é o ponto de entrada da nossa aplicação.
 
-No terminal, dentro de `node-api/`:
-
-```bash
 New-Item server.js (touch server.js no Linux/Mac)
 ```
 
----
 
 ### Entendendo o `server.js` — A Linguagem e a Estrutura
 
@@ -325,7 +283,6 @@ New-Item server.js (touch server.js no Linux/Mac)
 
 Estamos usando **JavaScript**! Mais especificamente, JavaScript rodando no **Node.js** (fora do navegador).
 
-JavaScript é a linguagem que roda nos navegadores (Chrome, Firefox, etc.). O **Node.js** pegou essa linguagem e permitiu que ela rodasse no **servidor** também. Ou seja, com JS você consegue fazer o frontend E o backend.
 
 #### A estrutura de um server.js
 
@@ -340,15 +297,10 @@ const express = require('express');
 - `require('express')` — é como dizer "quero usar a biblioteca Express que instalei"
 - `const express` — guardamos essa biblioteca na variável `express`
 - Pense como: **"pegar a caixa de ferramentas"**
-
 ##### Bloco 2 — Configuração (preparar a aplicação)
 
 ```javascript
-const app = express();
-const PORT = 3000;
-app.use(express.json());
 ```
-
 - `express()` — cria a aplicação (o servidor em si). É como **"montar o restaurante"**
 - `PORT = 3000` — define a porta. Pense na porta como o **endereço/número do restaurante**
 - `app.use(express.json())` — configura o servidor para entender dados em formato JSON. É como dizer **"aqui aceitamos pedidos por escrito"**
