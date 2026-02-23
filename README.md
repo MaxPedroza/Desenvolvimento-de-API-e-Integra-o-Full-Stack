@@ -104,8 +104,8 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 5. **Construir o CRUD** — criar todas as rotas da API de tarefas (criar, listar, buscar, atualizar, deletar) ✅
 6. **Testar a API** — validar cada endpoint com requisições reais ✅
 7. **Organizar o código** — separar rotas em arquivos próprios usando Express Router ✅
-8. **Construir o Frontend** — criar a interface com Angular *(em breve)*
-9. **Integrar tudo** — conectar o Angular com a API Node.js *(em breve)*
+8. **Construir o Frontend** — criar a interface com Angular
+9. **Integrar tudo** — conectar o Angular com a API Node.js
 
 ---
 
@@ -180,6 +180,14 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 - [Passo 18 — Atualizar o server.js](#passo-18--atualizar-o-serverjs)
 - [Passo 19 — Testar para garantir que tudo continua funcionando](#passo-19--testar-para-garantir-que-tudo-continua-funcionando)
 - [Conceitos Aprendidos na Fase 7](#conceitos-aprendidos-na-fase-7)
+
+#### Fase 8 — Criando o Frontend Angular
+- [O que vamos construir?](#o-que-vamos-construir-1)
+- [Passo 1 — Instalar o Angular CLI](#passo-1--instalar-o-angular-cli)
+- [Passo 2 — Criar o projeto Angular](#passo-2--criar-o-projeto-angular)
+- [Passo 3 — Rodar o servidor de desenvolvimento](#passo-3--rodar-o-servidor-de-desenvolvimento)
+- [Passo 4 — Limpar o componente principal](#passo-4--limpar-o-componente-principal)
+- [Conceitos Aprendidos na Fase 8](#conceitos-aprendidos-na-fase-8)
 
 #### Referência Rápida
 - [Conceitos Importantes Até Aqui](#conceitos-importantes-até-aqui)
@@ -2391,230 +2399,309 @@ Cada arquivo cuida do seu recurso. O `server.js` fica como um **painel de contro
 | **Separação de Responsabilidades** | Princípio de organização onde cada arquivo/módulo cuida de uma coisa só |
 | **Refatoração** | Reorganizar o código sem mudar o comportamento — melhorar a estrutura interna |
 
----
-
----
-
 ## Fase 8 — Criando o Frontend Angular
 
-Agora que o backend está pronto e testado, vamos construir o **frontend** usando o Angular, seguindo o mesmo padrão didático e passo a passo!
+Agora que nossa API está pronta e organizada, vamos construir a **interface** que o usuário vai usar.
 
 ### O que vamos construir?
 
-Uma interface web moderna para o nosso Todo List, onde o usuário poderá:
-- Visualizar todas as tarefas
-- Criar novas tarefas
-- Editar tarefas existentes
-- Marcar como concluída
-- Deletar tarefas
+Uma aplicação **Single Page Application (SPA)** com Angular.
+Ela vai ter:
+- Uma lista de tarefas
+- Um formulário para adicionar/editar
+- Botões para excluir e concluir
 
-Tudo isso se comunicando com a nossa API Node.js já pronta!
+### Passo 1 — Instalar o Angular CLI
 
-### Por que Angular?
+O **Angular CLI** (Command Line Interface) é a ferramenta oficial para criar e gerenciar projetos Angular.
 
-Angular é um dos frameworks mais populares para construção de interfaces web ricas, usado em grandes empresas e projetos. Ele traz:
-- Estrutura organizada (componentes, módulos, serviços)
-- Ferramentas modernas (CLI, TypeScript, templates)
-- Integração fácil com APIs REST
+No terminal (pode ser na raiz `fullstack-angular-node`), verifique se você já tem instalado:
 
-### Estrutura do frontend
-
-Vamos criar uma nova pasta para o frontend, separando do backend:
-
-```
-fullstack-angular-node/
-├── node-api/              ← Backend (já pronto)
-└── frontend-angular/      ← Frontend (Angular)
+```bash
+ng version
 ```
 
----
-
-### Passo a passo para criar o frontend Angular
-
-#### 1. Instalar o Angular CLI
-
-O Angular CLI é a ferramenta oficial para criar e gerenciar projetos Angular.
-
-No terminal, instale globalmente (só precisa fazer uma vez):
+Se der erro ou não encontrar, instale globalmente:
 
 ```bash
 npm install -g @angular/cli
 ```
 
-**O que esse comando faz?**
-- Baixa e instala o Angular CLI no seu sistema
-- Permite usar o comando `ng` em qualquer pasta
+### Passo 2 — Criar o projeto Angular
 
-#### 2. Criar o projeto Angular
+Vamos criar o projeto frontend **ao lado** da pasta `node-api`.
 
-No terminal, dentro da pasta `fullstack-angular-node`:
+1. Volte para a pasta raiz do estudo (`fullstack-angular-node`):
+   ```bash
+   cd ..
+   # ou
+   cd c:\dev\Estudos\fullstack-angular-node
+   ```
 
-```bash
-ng new frontend-angular
-```
+2. Crie o projeto Angular chamado `frontend-angular`:
+   ```bash
+   ng new frontend-angular
+   ```
 
-**O que esse comando faz?**
-- Cria a pasta `frontend-angular/` com toda a estrutura inicial do Angular
-- Pergunta algumas opções:
-    - **Add Angular routing?** → Responda: `Yes`
-    - **Which stylesheet format?** → Escolha: `CSS` (ou o que preferir)
+   **O CLI vai fazer algumas perguntas:**
+   - *Which stylesheet format would you like to use?* → Escolha **CSS**
+   - *Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)?* → Escolha **No** (vamos focar em SPA simples por enquanto)
 
-#### 3. Entendendo a estrutura criada
+Isso vai criar a pasta `frontend-angular` e instalar todas as dependências (pode demorar um pouco).
 
-```
-frontend-angular/
-├── src/
-│   ├── app/
-│   │   ├── app.component.ts
-│   │   ├── app.config.ts
-│   │   └── ...
-│   └── index.html
-├── angular.json
-├── package.json
-└── ...
-```
+### Passo 3 — Rodar o servidor de desenvolvimento
 
-| Pasta/Arquivo         | O que é |
-|-----------------------|---------|
-| `src/app/`            | Onde ficam os componentes e lógica do app |
-| `app.component.*`     | Componente principal (raiz) |
-| `app.config.ts`       | Configuração principal (declara providers e dependências) |
-| `angular.json`        | Configuração do projeto Angular |
-| `package.json`        | Dependências do frontend |
-
-#### 4. Rodar o servidor de desenvolvimento
-
-Entre na pasta do frontend:
+Entre na pasta do frontend e inicie o servidor:
 
 ```bash
 cd frontend-angular
 ng serve
 ```
 
-**O que esse comando faz?**
-- Compila o projeto e inicia um servidor local
-- Por padrão, acessível em `http://localhost:4200`
+Acesse no navegador: `http://localhost:4200`.
+Você deve ver a tela de boas-vindas do Angular.
 
-Abra no navegador para ver a tela inicial do Angular!
+### Passo 4 — Limpar o componente principal
 
-#### 5. Planejar os componentes do Todo List
+O Angular cria um template padrão cheio de links. Vamos limpar para começar do zero.
 
-Vamos dividir a interface em componentes reutilizáveis:
+1. Abra a pasta `frontend-angular` no VS Code.
+2. Vá em `src/app/app.component.html`.
+3. **Apague tudo** que está lá.
+4. Escreva apenas:
+   ```html
+   <h1>Todo List Fullstack</h1>
+   <p>Frontend rodando!</p>
+   ```
+5. Salve e olhe o navegador. Ele atualiza sozinho!
 
-| Componente           | Responsabilidade |
-|----------------------|-----------------|
-| `TarefaList`         | Lista todas as tarefas |
-| `TarefaItem`         | Exibe uma tarefa individual |
-| `TarefaForm`         | Formulário para criar/editar tarefa |
-| `Header`             | Cabeçalho do app |
+---
 
-> **Dica:** No Angular, cada componente tem 4 arquivos: `.ts` (lógica), `.html` (template), `.css` (estilo), `.spec.ts` (teste).
+### Conceitos Aprendidos na Fase 8
 
-#### 6. Criar o componente de lista de tarefas
+| Conceito | O que é |
+|---|---|
+| **Angular CLI** | Ferramenta de linha de comando para criar/gerenciar projetos Angular |
+| **ng new** | Comando para criar um novo projeto do zero |
+| **ng serve** | Sobe um servidor local de desenvolvimento que recarrega ao salvar arquivos |
+| **SPA** | Single Page Application - o site não recarrega a página inteira ao navegar |
 
-No terminal, dentro de `frontend-angular`:
+---
 
-```bash
-ng generate component tarefa-list
-```
+## Fase 9 — Consumindo a API (Services e HTTP)
 
-Repita para os outros componentes:
+Agora vamos conectar o Angular ao nosso Backend Node.js.
 
-```bash
-ng generate component tarefa-item
-ng generate component tarefa-form
-ng generate component header
-```
+### Passo 1 — Configurar o HttpClient
 
-#### 7. Criar o serviço para acessar a API
-
-No Angular, usamos **services** para centralizar chamadas HTTP.
-
-No terminal:
-
-```bash
-ng generate service tarefa
-```
-
-Isso cria `tarefa.service.ts` em `src/app/`.
-
-#### 8. Configurar o HttpClient (Angular 20+)
-
-> **Atenção:** No Angular 16+ (e especialmente na versão 20), o arquivo `app.module.ts` pode não existir mais. O Angular agora utiliza configuração baseada em funções e providers, geralmente em arquivos como `app.config.ts`.
-
-No seu projeto, o arquivo equivalente é `src/app/app.config.ts`.
-
-**Como adicionar o HttpClient:**
+Para fazer requisições HTTP (GET, POST, etc.), o Angular precisa do `HttpClient`.
+Nas versões modernas (Standalone), configuramos isso no `app.config.ts`.
 
 1. Abra `src/app/app.config.ts`.
-2. Importe o provider:
-     ```typescript
-     import { provideHttpClient } from '@angular/common/http';
-     ```
-3. Adicione `provideHttpClient()` na lista de `providers`:
-     ```typescript
-     export const appConfig: ApplicationConfig = {
-         providers: [
-             // ...outros providers
-             provideHttpClient(),
-             // ...outros providers
-         ]
-     };
-     ```
+2. Adicione `provideHttpClient()` na lista de providers.
 
-Assim o HttpClient estará disponível para injeção nos seus services e componentes.
+#### Versão limpa (para digitar)
 
-Assim, o Angular pode fazer requisições HTTP para a API.
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 
-#### 9. Implementar o serviço de tarefas
+import { routes } from './app.routes';
 
-No `tarefa.service.ts`, crie métodos para:
-- Buscar todas as tarefas (`GET /tarefas`)
-- Criar tarefa (`POST /tarefas`)
-- Atualizar tarefa (`PUT /tarefas/:id`)
-- Deletar tarefa (`DELETE /tarefas/:id`)
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient()
+  ]
+};
+```
 
-> **Dica:** Use o `HttpClient` do Angular para fazer as requisições.
+### Passo 2 — Criar a Interface (Modelo)
 
-#### 10. Montar a interface e integrar com a API
+O TypeScript precisa saber o formato dos dados. Vamos criar uma interface para a Tarefa.
 
-Monte os templates dos componentes para:
-- Exibir a lista de tarefas
-- Formulário para adicionar/editar
-- Botões para concluir/deletar
+No terminal (dentro de `frontend-angular`):
 
-Use o serviço para buscar e manipular os dados da API.
+```bash
+ng generate interface models/task
+```
 
-#### 11. Testar tudo!
+Abra `src/app/models/task.ts` e defina:
 
-Com o backend rodando (`node server.js`) e o frontend (`ng serve`), teste todas as funcionalidades:
-- Criar, listar, editar, concluir e deletar tarefas
+```typescript
+export interface Task {
+  id?: number; // Opcional porque ao criar não tem ID ainda
+  titulo: string;
+  descricao?: string;
+  concluida: boolean;
+}
+```
+
+### Passo 3 — Criar o Service
+
+O **Service** é responsável por falar com a API. O componente pede dados pro Service, e o Service pede pra API.
+
+```bash
+ng generate service services/task
+```
+
+Abra `src/app/services/task.service.ts`:
+
+```typescript
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Task } from '../models/task';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TaskService {
+  private apiUrl = 'http://localhost:3000/tarefas'; // URL da nossa API
+
+  constructor(private http: HttpClient) { }
+
+  // Listar todas
+  getTasks(): Observable<Task[]> {
+    return this.http.get<Task[]>(this.apiUrl);
+  }
+
+  // Criar
+  createTask(task: Task): Observable<Task> {
+    return this.http.post<Task>(this.apiUrl, task);
+  }
+
+  // Atualizar
+  updateTask(task: Task): Observable<Task> {
+    return this.http.put<Task>(`${this.apiUrl}/${task.id}`, task);
+  }
+
+  // Deletar
+  deleteTask(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+}
+```
+
+### Passo 4 — Listar Tarefas no Componente
+
+Vamos usar o `app.component.ts` para listar as tarefas.
+
+1. Abra `src/app/app.component.ts`.
+2. Importe o `CommonModule` (para usar diretivas como `*ngFor` ou o novo `@for`), o `TaskService` e a interface `Task`.
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Importante para *ngFor / @for
+import { TaskService } from './services/task.service';
+import { Task } from './models/task';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule], // Adicione CommonModule
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent implements OnInit {
+  tasks: Task[] = [];
+
+  constructor(private taskService: TaskService) {}
+
+  ngOnInit(): void {
+    this.getTasks();
+  }
+
+  getTasks(): void {
+    this.taskService.getTasks().subscribe((data) => {
+      this.tasks = data;
+      console.log(this.tasks);
+    });
+  }
+}
+```
+
+#### Versão comentada (para estudar)
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Necessário para diretivas básicas
+import { TaskService } from './services/task.service';
+import { Task } from './models/task';
+
+@Component({
+  selector: 'app-root',
+  standalone: true, // Componente Standalone (Angular 14+)
+  imports: [CommonModule], // Importamos módulos que vamos usar no HTML
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+// Implementamos OnInit para executar código assim que o componente nasce
+export class AppComponent implements OnInit {
+  // Array local para armazenar as tarefas que vêm da API
+  tasks: Task[] = [];
+
+  // Injetamos o TaskService no construtor
+  constructor(private taskService: TaskService) {}
+
+  // ngOnInit roda automaticamente quando o componente é iniciado
+  ngOnInit(): void {
+    this.getTasks();
+  }
+
+  // Método auxiliar para chamar o serviço
+  getTasks(): void {
+    // .subscribe() é o que "ativa" a requisição.
+    // Sem o subscribe, o Observable não faz nada (é "preguiçoso").
+    this.taskService.getTasks().subscribe((data) => {
+      // Quando os dados chegarem (data), guardamos no nosso array local
+      this.tasks = data;
+      console.log(this.tasks);
+    });
+  }
+}
+```
+
+3. Abra `src/app/app.component.html` e mostre a lista:
+
+```html
+<div class="container">
+  <h1>Minhas Tarefas</h1>
+  
+  <ul>
+    @for (task of tasks; track task.id) {
+      <li>
+        <strong>{{ task.titulo }}</strong> - {{ task.descricao }}
+      </li>
+    } @empty {
+      <li>Nenhuma tarefa encontrada.</li>
+    }
+  </ul>
+</div>
+```
+
+### Passo 5 — Testar
+
+Certifique-se de que o **Backend** está rodando (`node server.js` na pasta `node-api`) e o **Frontend** também (`ng serve` na pasta `frontend-angular`).
+
+Acesse `http://localhost:4200`. Você deve ver as tarefas que criou via Postman/Terminal aparecendo na tela!
 
 ---
 
-### Conceitos aprendidos nesta fase
+## Conceitos Aprendidos na Fase 9
 
-| Conceito              | O que é |
-|-----------------------|---------|
-| **Angular CLI**       | Ferramenta para criar e gerenciar projetos Angular |
-| **Componente**        | Bloco reutilizável de interface |
-| **Service**           | Centraliza lógica de acesso a dados/API |
-| **HttpClient**        | Módulo Angular para fazer requisições HTTP |
-| **Binding**           | Ligação entre dados e interface |
-| **Event binding**     | Ligar eventos (clique, submit) à lógica |
-| **ng generate**       | Comando para criar arquivos Angular automaticamente |
-
----
+| Conceito | O que é |
+|---|---|
+| **HttpClient** | Módulo do Angular para fazer requisições HTTP |
+| **Interface** | Contrato do TypeScript que define a estrutura dos dados |
+| **Service** | Classe onde colocamos a lógica de negócio e comunicação com APIs |
+| **Injeção de Dependência** | Padrão onde o Angular fornece as instâncias das classes (ex: injetar HttpClient no Service) |
+| **Observable** | Fluxo de dados assíncrono (resposta da API) que "assinamos" com `.subscribe()` |
+| **@for** | Nova sintaxe de controle de fluxo do Angular 17+ para loops |
 
 ### Próximos Passos
 
-- [ ] Implementar cada componente do frontend
-- [ ] Integrar frontend com a API
-- [ ] Melhorar o design e usabilidade
-- [ ] Adicionar feedbacks e validações
-- [ ] Publicar o projeto (opcional)
-
----
-
-> **Continue seguindo o passo a passo, digitando cada comando e código manualmente!**
-> Se tiver dúvidas, volte nas explicações ou peça exemplos detalhados.
+- [ ] Criar formulário para adicionar tarefas
+- [ ] Adicionar botões de excluir e concluir
+- [ ] Melhorar o CSS
