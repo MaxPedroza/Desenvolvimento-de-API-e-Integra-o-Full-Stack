@@ -5,6 +5,47 @@
 
 ---
 
+## 🗺️ Mapa do Guia
+
+Este é um **guia progressivo** dividido em 4 seções principais e 15 fases de aprendizado:
+
+```
+┌────────────────────────────────────────────────────────────┐
+│                                                            │
+│  📚 INTRODUÇÃO (Apresentação do projeto)                  │
+│                                                            │
+├────────────────────────────────────────────────────────────┤
+│                                                            │
+│  🔧 BACKEND (7 Fases — Node.js + Express)                 │
+│  ├─ Fase 1-2: Configuração e estrutura                    │
+│  ├─ Fase 3-4: Servidor e conceitos de API                 │
+│  ├─ Fase 5-6: CRUD completo e testes                      │
+│  └─ Fase 7: Organização de código                         │
+│                                                            │
+├────────────────────────────────────────────────────────────┤
+│                                                            │
+│  🖥️  FRONTEND (8 Fases — Angular)                         │
+│  ├─ Fase 8: Projeto Angular                               │
+│  ├─ Fase 9: Consumir API                                  │
+│  ├─ Fase 10-13: Formulários e UX                          │
+│  ├─ Fase 14: Resolver CORS                                │
+│  └─ Fase 15: Rodar tudo junto                             │
+│                                                            │
+├────────────────────────────────────────────────────────────┤
+│                                                            │
+│  📖 REFERÊNCIA (Conceitos, dúvidas, próximos passos)      │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
+```
+
+**⏱️ Tempo estimado:** 10-15 horas (dependendo do seu ritmo)
+
+**📋 Pré-requisitos:** Nenhum! Começamos do zero.
+
+**🎯 Objetivo final:** Uma aplicação web completa e funcional.
+
+---
+
 ## Sobre este projeto
 
 ### O que vamos construir?
@@ -107,27 +148,32 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 
 ---
 
-### Índice
+## 📚 Índice Geral
 
-#### Introdução
+### 1️⃣ INTRODUÇÃO
 
 - [Sobre este projeto](#sobre-este-projeto)
   - [O que vamos construir?](#o-que-vamos-construir)
   - [Por que um Todo List?](#por-que-um-todo-list)
+  - [O que vamos aprender?](#o-que-vamos-aprender)
   - [Para quem é este guia?](#para-quem-é-este-guia)
   - [Tecnologias utilizadas](#tecnologias-utilizadas)
   - [Estrutura do projeto](#estrutura-do-projeto)
+
+### 2️⃣ BACKEND — NODE.JS + EXPRESS
 
 #### Fase 1 — Fundamentos e Pré-requisitos
 
 - [O que é preciso ter instalado?](#o-que-é-preciso-ter-instalado)
 - [Verificando a instalação](#verificando-a-instalação)
 
+#### Fase 2 — Organizando a Estrutura de Pastas
+
 - [Por que organizar?](#por-que-organizar)
 - [Passo 1 — Criar a pasta raiz do estudo](#passo-1--criar-a-pasta-raiz-do-estudo)
 - [Passo 2 — Criar a pasta do backend (API)](#passo-2--criar-a-pasta-do-backend-api)
 
-#### Fase 3 — Criando o Projeto Node.js (Backend)
+#### Fase 3 — Criando o Projeto Node.js
 
 - [Passo 3 — Inicializar o projeto com npm](#passo-3--inicializar-o-projeto-com-npm)
 - [Passo 4 — Instalar o Express](#passo-4--instalar-o-express)
@@ -146,47 +192,113 @@ Este estudo está dividido em **fases progressivas**. Cada fase abaixo é docume
 - [O que é uma API REST?](#o-que-é-uma-api-rest)
 - [O que é JSON?](#o-que-é-json)
 - [Como estamos criando a API?](#como-estamos-criando-a-api)
+- [Conceitos Importantes Até Aqui](#conceitos-importantes-até-aqui)
 
-#### Fase 5 — Construindo o CRUD da API de Tarefas
+#### Fase 5 — Construindo o CRUD
 
-- [O que estamos construindo? (CRUD)](#o-que-estamos-construindo)
+- [O que estamos construindo?](#o-que-estamos-construindo)
 - [O que é CRUD?](#o-que-é-crud)
-- [Anatomia de uma Rota Express](#anatomia-de-uma-rota-express)
-- [Parâmetros de Rota (:id)](#parâmetros-de-rota-id)
-- [Desestruturação em JavaScript](#desestruturação-em-javascript)
-- [Validação Básica](#validação-básica)
-- [Métodos de Array usados no CRUD](#métodos-de-array-usados-no-crud)
-- [Passo 8 — O código completo do server.js com CRUD](#passo-8--o-código-completo-do-serverjs-com-crud)
+- **Conceitos Técnicos:**
+  - [Anatomia de uma Rota Express](#anatomia-de-uma-rota-express)
+  - [Parâmetros de Rota (:id)](#parâmetros-de-rota-id)
+  - [Desestruturação em JavaScript](#desestruturação-em-javascript)
+  - [Validação Básica](#validação-básica)
+  - [Métodos de Array usados no CRUD](#métodos-de-array-usados-no-crud)
+- **Implementação:**
+  - [Passo 8 — O código completo do server.js com CRUD](#passo-8--o-código-completo-do-serverjs-com-crud)
+- [Conceitos Aprendidos na Fase 5](#conceitos-aprendidos-na-fase-5)
 
-- [Passo 10 — Testando o CREATE (POST)](#passo-10--testando-o-create-post-tarefas)
-- [Passo 11 — Testando o READ ALL (GET)](#passo-11--testando-o-read-all-get-tarefas)
-- [Passo 15 — Testando cenários de ERRO](#passo-15--testando-cenários-de-erro)
-- [Testando com Ferramentas Visuais (Postman, Insomnia, Thunder Client)](#testando-com-ferramentas-visuais-postman-insomnia-thunder-client)
+#### Fase 6 — Testando a API
+
+- [Como testar?](#como-testar)
+- **Testes via Terminal:**
+  - [Passo 9 — Rodar o servidor](#passo-9--rodar-o-servidor)
+  - [Passo 10 — Testando o CREATE (POST)](#passo-10--testando-o-create-post-tarefas)
+  - [Passo 11 — Testando o READ ALL (GET)](#passo-11--testando-o-read-all-get-tarefas)
+  - [Passo 12 — Testando o READ ONE (GET)](#passo-12--testando-o-read-one-get-tarefasid)
+  - [Passo 13 — Testando o UPDATE (PUT)](#passo-13--testando-o-update-put-tarefasid)
+  - [Passo 14 — Testando o DELETE](#passo-14--testando-o-delete-delete-tarefasid)
+  - [Passo 15 — Testando cenários de ERRO](#passo-15--testando-cenários-de-erro)
+- **Ferramentas Visuais:**
+  - [Testando com Ferramentas Visuais (Postman, Insomnia, Thunder Client)](#testando-com-ferramentas-visuais-postman-insomnia-thunder-client)
 - [Conceitos Aprendidos na Fase 6](#conceitos-aprendidos-na-fase-6)
 
-#### Fase 7 — Organizando Rotas em Arquivos Separados
+#### Fase 7 — Organizando Rotas
 
 - [O que estamos fazendo e por quê?](#o-que-estamos-fazendo-e-por-quê)
-- [O que é o Express Router?](#o-que-é-o-express-router)
-- [Módulos em Node.js — module.exports e require](#módulos-em-nodejs--moduleexports-e-require)
-- [O que é app.use() com um prefixo?](#o-que-é-appuse-com-um-prefixo)
-- [Passo 16 — Criar a pasta routes](#passo-16--criar-a-pasta-routes)
-- [Passo 17 — Criar o arquivo routes/tarefas.js](#passo-17--criar-o-arquivo-routestarefasjs)
-- [Passo 18 — Atualizar o server.js](#passo-18--atualizar-o-serverjs)
+- **Conceitos:**
+  - [O que é o Express Router?](#o-que-é-o-express-router)
+  - [Módulos em Node.js — module.exports e require](#módulos-em-nodejs--moduleexports-e-require)
+  - [O que é app.use() com um prefixo?](#o-que-é-appuse-com-um-prefixo)
+- **Implementação:**
+  - [Passo 16 — Criar a pasta routes](#passo-16--criar-a-pasta-routes)
+  - [Passo 17 — Criar o arquivo routes/tarefas.js](#passo-17--criar-o-arquivo-routestarefasjs)
+  - [Passo 18 — Atualizar o server.js](#passo-18--atualizar-o-serverjs)
+  - [Passo 19 — Testar para garantir que tudo continua funcionando](#passo-19--testar-para-garantir-que-tudo-continua-funcionando)
 - [Conceitos Aprendidos na Fase 7](#conceitos-aprendidos-na-fase-7)
 
-#### Fase 8 — Criando o Frontend Angular
+### 3️⃣ FRONTEND — ANGULAR
 
+#### Fase 8 — Criando o Projeto Angular
+
+- [O que vamos construir?](#o-que-vamos-construir)
+- [Passo 1 — Instalar o Angular CLI](#passo-1--instalar-o-angular-cli)
+- [Passo 2 — Criar o projeto Angular](#passo-2--criar-o-projeto-angular)
 - [Passo 3 — Rodar o servidor de desenvolvimento](#passo-3--rodar-o-servidor-de-desenvolvimento)
+- [Passo 4 — Limpar o componente principal](#passo-4--limpar-o-componente-principal)
 - [Conceitos Aprendidos na Fase 8](#conceitos-aprendidos-na-fase-8)
 
-#### Referência Rápida
+#### Fase 9 — Consumindo a API
 
-- [Conceitos Importantes Até Aqui](#conceitos-importantes-até-aqui)
-- [Conceitos Aprendidos na Fase 5](#conceitos-aprendidos-na-fase-5)
-- [Conceitos Aprendidos na Fase 6](#conceitos-aprendidos-na-fase-6)
-- [Conceitos Aprendidos na Fase 7](#conceitos-aprendidos-na-fase-7)
-- [Próximos Passos](#próximos-passos)
+- **Configuração:**
+  - [Passo 1 — Configurar o HttpClient](#passo-1--configurar-o-httpclient)
+  - [Passo 2 — Criar a Interface (Modelo)](#passo-2--criar-a-interface-modelo)
+  - [Passo 3 — Criar o Service](#passo-3--criar-o-service)
+- **Implementação:**
+  - [Passo 4 — Listar Tarefas no Componente](#passo-4--listar-tarefas-no-componente)
+  - [Passo 5 — Testar](#passo-5--testar)
+- [Conceitos Aprendidos na Fase 9](#conceitos-aprendidos-na-fase-9)
+
+#### Fase 10 — Formulário para Criar
+
+- [Passo 1 — Adicionar FormsModule](#passo-1--adicionar-formsmodule)
+- [Passo 2 — Adicionar propriedades de formulário](#passo-2--adicionar-propriedades-de-formulário)
+- [Passo 3 — Criar o formulário no HTML](#passo-3--criar-o-formulário-no-html)
+
+#### Fase 11 — Marcar como Concluída e Deletar
+
+- [Atualizar o componente](#atualizar-o-componente)
+
+#### Fase 12 — Melhorar o CSS
+
+- [Estilos modernos e responsivos](#phase-12--melhorar-o-css)
+
+#### Fase 13 — Tratamento de Erros e Loading
+
+- [Atualizar o componente](#atualizar-o-componente-1)
+- [Atualizar o HTML](#atualizar-o-html)
+- [Adicionar estilos para mensagens](#adicionar-estilos-para-mensagens)
+
+#### Fase 14 — Resolver CORS
+
+- [Solução: Adicionar CORS no Backend](#solução-adicionar-cors-no-backend)
+
+#### Fase 15 — Rodar Tudo Junto
+
+- [Terminal 1 — Backend](#terminal-1--backend)
+- [Terminal 2 — Frontend](#terminal-2--frontend)
+- [Navegador](#navegador)
+- [Estrutura Final do Projeto](#estrutura-final-do-projeto)
+- [Conceitos Aprendidos nas Fases 10-15](#conceitos-aprendidos-nas-fases-10-15)
+
+### 4️⃣ REFERÊNCIA E PRÓXIMOS PASSOS
+
+- [Parabéns! 🎉](#parabéns)
+  - [O que você aprendeu](#o-que-você-aprendeu)
+  - [Próximas Melhorias (desafio)](#próximas-melhorias-desafio)
+  - [Recursos para continuar aprendendo](#recursos-para-continuar-aprendendo)
+- [Dúvidas Comuns](#dúvidas-comuns)
+- [Resumo Executivo](#resumo-executivo)
 
 ---
 
@@ -588,6 +700,22 @@ Cada **rota** que criamos é um **endpoint** da API — um endereço que o clien
 ---
 
 ## Fase 5 — Construindo o CRUD da API de Tarefas
+
+### 📋 Índice da Fase 5
+
+- [O que estamos construindo?](#o-que-estamos-construindo)
+- [O que é CRUD?](#o-que-é-crud)
+- **Conceitos Técnicos:**
+  - [Anatomia de uma Rota Express](#anatomia-de-uma-rota-express)
+  - [Parâmetros de Rota (:id)](#parâmetros-de-rota-id)
+  - [Desestruturação em JavaScript](#desestruturação-em-javascript)
+  - [Validação Básica](#validação-básica)
+  - [Métodos de Array usados no CRUD](#métodos-de-array-usados-no-crud)
+- **Implementação:**
+  - [Passo 8 — O código completo do server.js com CRUD](#passo-8--o-código-completo-do-serverjs-com-crud)
+- [Conceitos Aprendidos na Fase 5](#conceitos-aprendidos-na-fase-5)
+
+---
 
 ### O que estamos construindo?
 
@@ -1321,7 +1449,25 @@ Estudos/
 
 ## Fase 6 — Testando a API
 
-Agora que o CRUD está pronto, precisamos **testar cada rota** para garantir que tudo funciona como esperado — tanto os cenários de sucesso quanto os de erro.
+### 📋 Índice da Fase 6
+
+- [Como testar?](#como-testar)
+- **Testes via Terminal:**
+  - [Passo 9 — Rodar o servidor](#passo-9--rodar-o-servidor)
+  - [Passo 10 — Testando o CREATE (POST)](#passo-10--testando-o-create-post-tarefas)
+  - [Passo 11 — Testando o READ ALL (GET)](#passo-11--testando-o-read-all-get-tarefas)
+  - [Passo 12 — Testando o READ ONE (GET)](#passo-12--testando-o-read-one-get-tarefasid)
+  - [Passo 13 — Testando o UPDATE (PUT)](#passo-13--testando-o-update-put-tarefasid)
+  - [Passo 14 — Testando o DELETE](#passo-14--testando-o-delete-delete-tarefasid)
+  - [Passo 15 — Testando cenários de ERRO](#passo-15--testando-cenários-de-erro)
+- **Ferramentas Visuais:**
+  - [Postman](#postman)
+  - [Insomnia](#insomnia)
+  - [Thunder Client](#thunder-client-extensão-do-vs-code)
+  - [Terminal vs. Ferramentas Visuais](#terminal-vs-ferramentas-visuais--quando-usar-cada-uma)
+- [Conceitos Aprendidos na Fase 6](#conceitos-aprendidos-na-fase-6)
+
+---
 
 ### Como testar?
 
@@ -1772,6 +1918,23 @@ Se você não quer instalar outro programa, pode testar **direto no VS Code**!
 ---
 
 ## Fase 7 — Organizando Rotas em Arquivos Separados
+
+### 📋 Índice da Fase 7
+
+- [O que estamos fazendo e por quê?](#o-que-estamos-fazendo-e-por-quê)
+- **Conceitos:**
+  - [O que é o Express Router?](#o-que-é-o-express-router)
+  - [Módulos em Node.js — module.exports e require](#módulos-em-nodejs--moduleexports-e-require)
+  - [O que é app.use() com um prefixo?](#o-que-é-appuse-com-um-prefixo)
+- **Implementação:**
+  - [Passo 16 — Criar a pasta routes](#passo-16--criar-a-pasta-routes)
+  - [Passo 17 — Criar o arquivo routes/tarefas.js](#passo-17--criar-o-arquivo-routestarefasjs)
+  - [Passo 18 — Atualizar o server.js](#passo-18--atualizar-o-serverjs)
+  - [Passo 19 — Testar para garantir que tudo continua funcionando](#passo-19--testar-para-garantir-que-tudo-continua-funcionando)
+- [Por que essa organização importa?](#por-que-essa-organização-importa)
+- [Conceitos Aprendidos na Fase 7](#conceitos-aprendidos-na-fase-7)
+
+---
 
 ### O que estamos fazendo e por quê?
 
@@ -2377,9 +2540,39 @@ Cada arquivo cuida do seu recurso. O `server.js` fica como um **painel de contro
 | **Separação de Responsabilidades** | Princípio de organização onde cada arquivo/módulo cuida de uma coisa só       |
 | **Refatoração**                    | Reorganizar o código sem mudar o comportamento — melhorar a estrutura interna |
 
-## Fase 8 — Criando o Frontend Angular
+## Fase 8 — Criando o Projeto Angular
 
-Agora que nossa API está pronta e organizada, vamos construir a **interface** que o usuário vai usar.
+### 📋 Índice das Fases 8-15 (Frontend Angular)
+
+**Fases 8-9: Setup**
+
+- [Fase 8 — Criando o Projeto Angular](#fase-8--criando-o-projeto-angular)
+- [Fase 9 — Consumindo a API](#fase-9--consumindo-a-api)
+
+**Fases 10-13: Funcionalidades**
+
+- [Fase 10 — Formulário para Criar Tarefas](#fase-10--formulário-para-criar-tarefas)
+- [Fase 11 — Marcar como Concluída e Deletar](#fase-11--marcar-como-concluída-e-deletar)
+- [Fase 12 — Melhorar o CSS](#fase-12--melhorar-o-css)
+- [Fase 13 — Tratamento de Erros e Loading](#fase-13--tratamento-de-erros-e-loading)
+
+**Fases 14-15: Integração e Deploy**
+
+- [Fase 14 — Resolver CORS](#fase-14--resolver-cors)
+- [Fase 15 — Rodar Tudo Junto](#fase-15--rodar-tudo-junto)
+
+---
+
+### 📋 Detalhes da Fase 8
+
+- [O que vamos construir?](#o-que-vamos-construir)
+- [Passo 1 — Instalar o Angular CLI](#passo-1--instalar-o-angular-cli)
+- [Passo 2 — Criar o projeto Angular](#passo-2--criar-o-projeto-angular)
+- [Passo 3 — Rodar o servidor de desenvolvimento](#passo-3--rodar-o-servidor-de-desenvolvimento)
+- [Passo 4 — Limpar o componente principal](#passo-4--limpar-o-componente-principal)
+- [Conceitos Aprendidos na Fase 8](#conceitos-aprendidos-na-fase-8)
+
+---
 
 ### O que vamos construir?
 
@@ -2471,9 +2664,22 @@ O Angular cria um template padrão cheio de links. Vamos limpar para começar do
 
 ## Fase 9 — Consumindo a API (Services e HTTP)
 
-Agora vamos conectar o Angular ao nosso Backend Node.js.
+### 📋 Índice da Fase 9
+
+- **Configuração:**
+  - [Passo 1 — Configurar o HttpClient](#passo-1--configurar-o-httpclient)
+  - [Passo 2 — Criar a Interface (Modelo)](#passo-2--criar-a-interface-modelo)
+  - [Passo 3 — Criar o Service](#passo-3--criar-o-service)
+- **Implementação:**
+  - [Passo 4 — Listar Tarefas no Componente](#passo-4--listar-tarefas-no-componente)
+  - [Passo 5 — Testar](#passo-5--testar)
+- [Conceitos Aprendidos na Fase 9](#conceitos-aprendidos-na-fase-9)
+
+---
 
 ### Passo 1 — Configurar o HttpClient
+
+Agora vamos conectar o Angular ao nosso Backend Node.js.
 
 Para fazer requisições HTTP (GET, POST, etc.), o Angular precisa do `HttpClient`.
 Nas versões modernas (Standalone), configuramos isso no `app.config.ts`.
@@ -2678,6 +2884,14 @@ Acesse `http://localhost:4200`. Você deve ver as tarefas que criou via Postman/
 
 ## Fase 10 — Formulário para Criar Tarefas
 
+### 📋 Índice da Fase 10
+
+- [Passo 1 — Adicionar FormsModule](#passo-1--adicionar-formsmodule)
+- [Passo 2 — Adicionar propriedades de formulário](#passo-2--adicionar-propriedades-de-formulário)
+- [Passo 3 — Criar o formulário no HTML](#passo-3--criar-o-formulário-no-html)
+
+---
+
 ### Passo 1 — Adicionar FormsModule
 
 Para usar `[(ngModel)]` (two-way binding), precisamos importar o `FormsModule`.
@@ -2856,7 +3070,13 @@ deletarTarefa(id: number): void {
 
 ## Fase 12 — Melhorar o CSS
 
-Abra `src/app/app.css` e adicione:
+### 📋 Índice da Fase 12
+
+- [Estilos modernos e responsivos](#estilos-modernos-e-responsivos)
+
+---
+
+### Estilos modernos e responsivos
 
 ```css
 :root {
@@ -3085,6 +3305,14 @@ h2 {
 ---
 
 ## Fase 13 — Tratamento de Erros e Loading
+
+### 📋 Índice da Fase 13
+
+- [Atualizar o componente](#atualizar-o-componente-1)
+- [Atualizar o HTML](#atualizar-o-html)
+- [Adicionar estilos para mensagens](#adicionar-estilos-para-mensagens)
+
+---
 
 ### Atualizar o componente
 
@@ -3320,7 +3548,11 @@ Adicione ao final de `app.component.css`:
 
 ## Fase 14 — Resolver CORS
 
-Se você vir erros de CORS no console, é porque o navegador está bloqueando requisições de `localhost:4200` para `localhost:3000`.
+### 📋 Índice da Fase 14
+
+- [Solução: Adicionar CORS no Backend](#solução-adicionar-cors-no-backend)
+
+---
 
 ### Solução: Adicionar CORS no Backend
 
@@ -3355,7 +3587,17 @@ Reinicie o servidor (`node server.js`) e as requisições devem funcionar!
 
 ## Fase 15 — Rodar Tudo Junto
 
-Agora você tem uma aplicação **fullstack** completa!
+### 📋 Índice da Fase 15
+
+- [Terminal 1 — Backend](#terminal-1--backend)
+- [Terminal 2 — Frontend](#terminal-2--frontend)
+- [Navegador](#navegador)
+- [Estrutura Final do Projeto](#estrutura-final-do-projeto)
+- [Conceitos Aprendidos nas Fases 10-15](#conceitos-aprendidos-nas-fases-10-15)
+
+---
+
+### Agora você tem uma aplicação **fullstack** completa!
 
 ### Terminal 1 — Backend
 
