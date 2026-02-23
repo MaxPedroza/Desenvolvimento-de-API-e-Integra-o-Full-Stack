@@ -2393,16 +2393,228 @@ Cada arquivo cuida do seu recurso. O `server.js` fica como um **painel de contro
 
 ---
 
-## Próximos Passos
+---
 
-- [x] Criar rotas CRUD completas (GET, POST, PUT, DELETE)
-- [x] Testar todas as rotas da API
-- [x] Organizar rotas em arquivos separados
-- [ ] Conectar com banco de dados
-- [ ] Adicionar validação e tratamento de erros avançado
-- [ ] Criar o frontend com Angular
-- [ ] Integrar Angular com a API Node.js
+## Fase 8 — Criando o Frontend Angular
+
+Agora que o backend está pronto e testado, vamos construir o **frontend** usando o Angular, seguindo o mesmo padrão didático e passo a passo!
+
+### O que vamos construir?
+
+Uma interface web moderna para o nosso Todo List, onde o usuário poderá:
+- Visualizar todas as tarefas
+- Criar novas tarefas
+- Editar tarefas existentes
+- Marcar como concluída
+- Deletar tarefas
+
+Tudo isso se comunicando com a nossa API Node.js já pronta!
+
+### Por que Angular?
+
+Angular é um dos frameworks mais populares para construção de interfaces web ricas, usado em grandes empresas e projetos. Ele traz:
+- Estrutura organizada (componentes, módulos, serviços)
+- Ferramentas modernas (CLI, TypeScript, templates)
+- Integração fácil com APIs REST
+
+### Estrutura do frontend
+
+Vamos criar uma nova pasta para o frontend, separando do backend:
+
+```
+fullstack-angular-node/
+├── node-api/              ← Backend (já pronto)
+└── frontend-angular/      ← Frontend (Angular)
+```
 
 ---
 
-> **Dica:** Sempre que quiser voltar nesse material, ele estará aqui. Vamos atualizando conforme avançamos!
+### Passo a passo para criar o frontend Angular
+
+#### 1. Instalar o Angular CLI
+
+O Angular CLI é a ferramenta oficial para criar e gerenciar projetos Angular.
+
+No terminal, instale globalmente (só precisa fazer uma vez):
+
+```bash
+npm install -g @angular/cli
+```
+
+**O que esse comando faz?**
+- Baixa e instala o Angular CLI no seu sistema
+- Permite usar o comando `ng` em qualquer pasta
+
+#### 2. Criar o projeto Angular
+
+No terminal, dentro da pasta `fullstack-angular-node`:
+
+```bash
+ng new frontend-angular
+```
+
+**O que esse comando faz?**
+- Cria a pasta `frontend-angular/` com toda a estrutura inicial do Angular
+- Pergunta algumas opções:
+    - **Add Angular routing?** → Responda: `Yes`
+    - **Which stylesheet format?** → Escolha: `CSS` (ou o que preferir)
+
+#### 3. Entendendo a estrutura criada
+
+```
+frontend-angular/
+├── src/
+│   ├── app/
+│   │   ├── app.component.ts
+│   │   ├── app.config.ts
+│   │   └── ...
+│   └── index.html
+├── angular.json
+├── package.json
+└── ...
+```
+
+| Pasta/Arquivo         | O que é |
+|-----------------------|---------|
+| `src/app/`            | Onde ficam os componentes e lógica do app |
+| `app.component.*`     | Componente principal (raiz) |
+| `app.config.ts`       | Configuração principal (declara providers e dependências) |
+| `angular.json`        | Configuração do projeto Angular |
+| `package.json`        | Dependências do frontend |
+
+#### 4. Rodar o servidor de desenvolvimento
+
+Entre na pasta do frontend:
+
+```bash
+cd frontend-angular
+ng serve
+```
+
+**O que esse comando faz?**
+- Compila o projeto e inicia um servidor local
+- Por padrão, acessível em `http://localhost:4200`
+
+Abra no navegador para ver a tela inicial do Angular!
+
+#### 5. Planejar os componentes do Todo List
+
+Vamos dividir a interface em componentes reutilizáveis:
+
+| Componente           | Responsabilidade |
+|----------------------|-----------------|
+| `TarefaList`         | Lista todas as tarefas |
+| `TarefaItem`         | Exibe uma tarefa individual |
+| `TarefaForm`         | Formulário para criar/editar tarefa |
+| `Header`             | Cabeçalho do app |
+
+> **Dica:** No Angular, cada componente tem 4 arquivos: `.ts` (lógica), `.html` (template), `.css` (estilo), `.spec.ts` (teste).
+
+#### 6. Criar o componente de lista de tarefas
+
+No terminal, dentro de `frontend-angular`:
+
+```bash
+ng generate component tarefa-list
+```
+
+Repita para os outros componentes:
+
+```bash
+ng generate component tarefa-item
+ng generate component tarefa-form
+ng generate component header
+```
+
+#### 7. Criar o serviço para acessar a API
+
+No Angular, usamos **services** para centralizar chamadas HTTP.
+
+No terminal:
+
+```bash
+ng generate service tarefa
+```
+
+Isso cria `tarefa.service.ts` em `src/app/`.
+
+#### 8. Configurar o HttpClient (Angular 20+)
+
+> **Atenção:** No Angular 16+ (e especialmente na versão 20), o arquivo `app.module.ts` pode não existir mais. O Angular agora utiliza configuração baseada em funções e providers, geralmente em arquivos como `app.config.ts`.
+
+No seu projeto, o arquivo equivalente é `src/app/app.config.ts`.
+
+**Como adicionar o HttpClient:**
+
+1. Abra `src/app/app.config.ts`.
+2. Importe o provider:
+     ```typescript
+     import { provideHttpClient } from '@angular/common/http';
+     ```
+3. Adicione `provideHttpClient()` na lista de `providers`:
+     ```typescript
+     export const appConfig: ApplicationConfig = {
+         providers: [
+             // ...outros providers
+             provideHttpClient(),
+             // ...outros providers
+         ]
+     };
+     ```
+
+Assim o HttpClient estará disponível para injeção nos seus services e componentes.
+
+Assim, o Angular pode fazer requisições HTTP para a API.
+
+#### 9. Implementar o serviço de tarefas
+
+No `tarefa.service.ts`, crie métodos para:
+- Buscar todas as tarefas (`GET /tarefas`)
+- Criar tarefa (`POST /tarefas`)
+- Atualizar tarefa (`PUT /tarefas/:id`)
+- Deletar tarefa (`DELETE /tarefas/:id`)
+
+> **Dica:** Use o `HttpClient` do Angular para fazer as requisições.
+
+#### 10. Montar a interface e integrar com a API
+
+Monte os templates dos componentes para:
+- Exibir a lista de tarefas
+- Formulário para adicionar/editar
+- Botões para concluir/deletar
+
+Use o serviço para buscar e manipular os dados da API.
+
+#### 11. Testar tudo!
+
+Com o backend rodando (`node server.js`) e o frontend (`ng serve`), teste todas as funcionalidades:
+- Criar, listar, editar, concluir e deletar tarefas
+
+---
+
+### Conceitos aprendidos nesta fase
+
+| Conceito              | O que é |
+|-----------------------|---------|
+| **Angular CLI**       | Ferramenta para criar e gerenciar projetos Angular |
+| **Componente**        | Bloco reutilizável de interface |
+| **Service**           | Centraliza lógica de acesso a dados/API |
+| **HttpClient**        | Módulo Angular para fazer requisições HTTP |
+| **Binding**           | Ligação entre dados e interface |
+| **Event binding**     | Ligar eventos (clique, submit) à lógica |
+| **ng generate**       | Comando para criar arquivos Angular automaticamente |
+
+---
+
+### Próximos Passos
+
+- [ ] Implementar cada componente do frontend
+- [ ] Integrar frontend com a API
+- [ ] Melhorar o design e usabilidade
+- [ ] Adicionar feedbacks e validações
+- [ ] Publicar o projeto (opcional)
+
+---
+
+> **Continue seguindo o passo a passo, digitando cada comando e código manualmente!**
+> Se tiver dúvidas, volte nas explicações ou peça exemplos detalhados.
